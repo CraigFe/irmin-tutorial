@@ -1,0 +1,343 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Getting started with OCaml - Irmin Tutorial</title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body class="light">
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">var path_to_root = "";</script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { } 
+            if (theme === null || theme === undefined) { theme = 'light'; }
+            document.body.className = theme;
+            document.querySelector('html').className = theme + ' js';
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <ol class="chapter"><li><a href="Introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="UsingTheCommandLine.html"><strong aria-hidden="true">2.</strong> Using the command-line</a></li><li><a href="GettingStartedOCaml.html" class="active"><strong aria-hidden="true">3.</strong> Getting started with OCaml</a></li><li><a href="Contents.html"><strong aria-hidden="true">4.</strong> Custom content types</a></li><li><a href="Backend.html"><strong aria-hidden="true">5.</strong> Writing a storage backend</a></li><li><a href="GraphQL.html"><strong aria-hidden="true">6.</strong> GraphQL bindings</a></li><li><a href="Resources.html"><strong aria-hidden="true">7.</strong> Resources</a></li></ol>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light <span class="default">(default)</span></button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                            
+                            <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                                <i class="fa fa-search"></i>
+                            </button>
+                            
+                        </div>
+
+                        <h1 class="menu-title">Irmin Tutorial</h1> 
+
+                        <div class="right-buttons">
+                            <a href="print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <a class="header" href="#getting-started-using-ocaml" id="getting-started-using-ocaml"><h1>Getting started using OCaml</h1></a>
+<p>When setting up and Irmin database in OCaml you will need to consider, at least, the content type and storage backend. This is because Irmin has the ability to adapt to existing data structures using a convenient type combinator (<a href="https://mirage.github.io/irmin/irmin/Irmin/Type/index.html">Irmin.Type</a>), which is used to define <a href="https://mirage.github.io/irmin/irmin/Irmin/Contents/index.html">contents</a> for your datastore. Irmin provides implementations for <a href="https://mirage.github.io/irmin/irmin/Irmin/Contents/index.html#module-String">String</a>, <a href="https://mirage.github.io/irmin/irmin/Irmin/Contents/index.html#module-Cstruct">Cstruct</a>, <a href="https://mirage.github.io/irmin/irmin/Irmin/Contents/index.html#module-Json">Json</a> and <a href="https://mirage.github.io/irmin/irmin/Irmin/Contents/index.html#module-Json_value">Json_value</a> contents, but it is also very easy to make your own!</p>
+<p>Irmin give you a few options a few options when it comes to storage: an in-memory store (<code>irmin-mem</code>), a filesystem store (<code>irmin-fs</code>) and git-compatible filesystem/in-memory stores (<code>irmin-git</code>). These packages define the way that the data should be organized, but not any I/O routines (with the exception of <code>irmin-mem</code>, which does no I/O). Luckily, <code>irmin-unix</code> implements the I/O routines needed to make Irmin work on unix-like platforms. Additionally, the <code>irmin-mirage</code>, <code>irmin-mirage-git</code> and <code>irmin-mirage-graphql</code> packages provide <a href="https://mirage.io">Mirage</a> compatible interfaces.</p>
+<p>It's also possible to implement your own storage backend if you'd like -- nearly everything in <code>Irmin</code> is configurable thanks to the power of functors in OCaml! This includes the hash function, branch, key and metadata types. Because of this flexibility there are a lot of different options to pick from; I will do my best to explain the most basic usage in this section and begin introducing more advanced concepts in subsequent sections.</p>
+<p>It is important to note that most <code>Irmin</code> functions return <code>Lwt.t</code> values, which means that you will need to use <code>Lwt_main.run</code> to execute them. If you're not familiar with <a href="https://github.com/ocsigen/lwt">Lwt</a> then I suggest <a href="https://mirage.io/wiki/tutorial-lwt">this tutorial</a>.</p>
+<a class="header" href="#creating-a-store" id="creating-a-store"><h2>Creating a store</h2></a>
+<p>An in-memory store with string contents:</p>
+<pre><code class="language-ocaml">module Mem_store = Irmin_mem.KV(Irmin.Contents.String)
+</code></pre>
+<p>An on-disk git store with JSON contents:</p>
+<pre><code class="language-ocaml">module Git_store = Irmin_unix.Git.FS.KV(Irmin.Contents.Json)
+</code></pre>
+<p>These examples are using <a href="https://mirage.github.io/irmin/irmin/Irmin/module-type-KV/index.html">Irmin.KV</a>, which is a specialization of <a href="https://mirage.github.io/irmin/irmin/Irmin/module-type-S/index.html">Irmin.S</a> with string list keys, string branches and no metadata.</p>
+<p>The following example is the same as the first, using <code>Irmin_mem.Make</code> instead of <code>Irmin_mem.KV</code>:</p>
+<pre><code class="language-ocaml">module Mem_Store =
+    Irmin_mem.Make
+        (Irmin.Metadata.None)
+        (Irmin.Contents.Json)
+        (Irmin.Path.String_list)
+        (Irmin.Branch.String)
+        (Irmin.Hash.SHA1)
+</code></pre>
+<a class="header" href="#configuring-and-creating-a-repo" id="configuring-and-creating-a-repo"><h2>Configuring and creating a repo</h2></a>
+<p>Different store types require different configuration options -- an on-disk store needs to know where it should be stored in the filesystem, however an in-memory store doesn't. This means that each storage backend implements its own configuration methods based on <a href="https://mirage.github.io/irmin/irmin/Irmin/Private/Conf/index.html">Irmin.Private.Conf</a> - for the examples above there are <code>Irmin_mem.config</code>, <code>Irmin_fs.config</code> and <code>Irmin_git.config</code>, each taking slightly different parameters.</p>
+<pre><code class="language-ocaml">let git_config = Irmin_git.config ~bare:true &quot;/tmp/irmin&quot;
+</code></pre>
+<pre><code class="language-ocaml">let config = Irmin_mem.config ()
+</code></pre>
+<p>With this configuration it's very easy to create an <a href="https://mirage.github.io/irmin/irmin/Irmin/Repo/index.html">Irmin.Repo</a> using <a href="https://mirage.github.io/irmin/irmin/Irmin/Make/Repo/index.html#val-v">Repo.v</a>:</p>
+<pre><code class="language-ocaml">let git_repo = Git_store.Repo.v git_config
+</code></pre>
+<pre><code class="language-ocaml">let repo = Mem_store.Repo.v config
+</code></pre>
+<a class="header" href="#using-the-repo-to-obtain-access-to-a-branch" id="using-the-repo-to-obtain-access-to-a-branch"><h2>Using the repo to obtain access to a branch</h2></a>
+<p>Once a repo has been created, you can access a branch and start to modify it.</p>
+<p>To get access to the <code>master</code> branch:</p>
+<pre><code class="language-ocaml">open Lwt.Infix
+
+let master config =
+    Mem_store.Repo.v config &gt;&gt;= Mem_store.master
+</code></pre>
+<p>To get access to a named branch:</p>
+<pre><code class="language-ocaml">let branch config name =
+    Mem_store.Repo.v config &gt;&gt;= fun repo -&gt;
+    Mem_store.of_branch repo name
+</code></pre>
+<a class="header" href="#modifying-the-store" id="modifying-the-store"><h2>Modifying the store</h2></a>
+<p>Now you can begin to interact with the store using <code>get</code> and <code>set</code>.</p>
+<pre><code class="language-ocaml">let info message = Irmin_unix.info ~author:&quot;Example&quot; &quot;%s&quot; message
+
+let main =
+    Mem_store.Repo.v config &gt;&gt;= Mem_store.master &gt;&gt;= fun t -&gt;
+    (* Set a/b/c to &quot;Hello, Irmin!&quot; *)
+    Mem_store.set_exn t [&quot;a&quot;; &quot;b&quot;; &quot;c&quot;] &quot;Hello, Irmin!&quot; ~info:(info &quot;my first commit&quot;) &gt;&gt;= fun () -&gt;
+    (* Get a/b/c *)
+    Mem_store.get t [&quot;a&quot;; &quot;b&quot;; &quot;c&quot;] &gt;|= fun s -&gt;
+    assert (s = &quot;Hello, Irmin!&quot;)
+let () = Lwt_main.run main
+</code></pre>
+<a class="header" href="#transactions" id="transactions"><h2>Transactions</h2></a>
+<p><a href="https://mirage.github.io/irmin/irmin/Irmin/module-type-S_MAKER/index.html#type-transaction">Transactions</a> allow you to make many modifications using an in-memory tree then apply them all at once. This is done using <a href="https://mirage.github.io/irmin/irmin/Irmin/module-type-S_MAKER/index.html#val-with_tree">with_tree</a>:</p>
+<pre><code class="language-ocaml">let transaction_example =
+Mem_store.Repo.v config &gt;&gt;= Mem_store.master &gt;&gt;= fun t -&gt;
+let info = Irmin_unix.info &quot;example transaction&quot; in
+Mem_store.with_tree_exn t [] ~info ~strategy:`Set (fun tree -&gt;
+    let tree = match tree with Some t -&gt; t | None -&gt; Mem_store.Tree.empty in
+    Mem_store.Tree.remove tree [&quot;foo&quot;; &quot;bar&quot;] &gt;&gt;= fun tree -&gt;
+    Mem_store.Tree.add tree [&quot;a&quot;; &quot;b&quot;; &quot;c&quot;] &quot;123&quot; &gt;&gt;= fun tree -&gt;
+    Mem_store.Tree.add tree [&quot;d&quot;; &quot;e&quot;; &quot;f&quot;] &quot;456&quot; &gt;&gt;= Lwt.return_some)
+let () = Lwt_main.run transaction_example
+</code></pre>
+<p>A tree can be modified using the functions in <a href="https://mirage.github.io/irmin/irmin/Irmin/module-type-S/Tree/index.html">Irmin.S.Tree</a>, and when it is returned by the <code>with_tree</code> callback, it will be applied using the transaction's strategy (<code>`Set</code> in the code above)  at the given key (<code>[]</code> in the code above).</p>
+<p>Here is an example <code>move</code> function to move files from one path to another:</p>
+<pre><code class="language-ocaml">let move t ~src ~dest =
+    Mem_store.with_tree_exn t Mem_store.Key.empty ~strategy:`Set (fun tree -&gt;
+        match tree with
+        | Some tr -&gt;
+            Mem_store.Tree.get_tree tr src &gt;&gt;= fun v -&gt;
+            Mem_store.Tree.remove tr src &gt;&gt;= fun _ -&gt;
+            Mem_store.Tree.add_tree tr dest v &gt;&gt;= Lwt.return_some
+        | None -&gt; Lwt.return_none
+    )
+let main =
+    Mem_store.Repo.v config &gt;&gt;= Mem_store.master &gt;&gt;= fun t -&gt;
+    let info = Irmin_unix.info &quot;move a -&gt; foo&quot; in
+    move t ~src:[&quot;a&quot;] ~dest:[&quot;foo&quot;] ~info
+let () = Lwt_main.run main
+</code></pre>
+<a class="header" href="#sync" id="sync"><h2>Sync</h2></a>
+<p><a href="https://docs.mirage.io/irmin/Irmin/Sync/index.html">Irmin.Sync</a> implements the functions needed to interact with remote stores.</p>
+<ul>
+<li><a href="https://docs.mirage.io/irmin/Irmin/Sync/index.html#val-fetch">fetch</a> populates a local store with objects from a remote store</li>
+<li><a href="https://docs.mirage.io/irmin/Irmin/Sync/index.html#val-pull">pull</a> updates a local store with objects from a remote store</li>
+<li><a href="https://docs.mirage.io/irmin/Irmin/Sync/index.html#val-fpush">push</a> updates a remote store with objects from a local store</li>
+</ul>
+<p>Each of these also has an <code>_exn</code> variant which may raise an exception instead of returning <code>result</code> value.</p>
+<p>For example, you can pull a repo and list the files in the root of the project:</p>
+<pre><code class="language-ocaml">open Irmin_unix
+module Git_mem_store = Git.Mem.KV(Irmin.Contents.String)
+module Sync = Irmin.Sync(Git_mem_store)
+let remote = Git_mem_store.remote &quot;git://github.com/mirage/irmin.git&quot;
+let main =
+    Git_mem_store.Repo.v config &gt;&gt;= Git_mem_store.master &gt;&gt;= fun t -&gt;
+    Sync.pull_exn t remote `Set &gt;&gt;= fun () -&gt;
+    Git_mem_store.list t [] &gt;|= List.iter (fun (step, kind) -&gt;
+        match kind with
+        | `Contents -&gt; Printf.printf &quot;FILE %s\n&quot; step
+        | `Node -&gt; Printf.printf &quot;DIR %s\n&quot; step
+    )
+let () = Lwt_main.run main
+</code></pre>
+<a class="header" href="#json-contents" id="json-contents"><h2>JSON Contents</h2></a>
+<p>Most examples in this tutorial use string contents, so I will provide some further information about using JSON values.</p>
+<p>There are two types of JSON contents: <a href="https://mirage.github.io/irmin/irmin/Irmin/Contents/index.html#module-Json_value">Json_value</a> and <a href="https://mirage.github.io/irmin/irmin/Irmin/Contents/index.html#module-Json">Json</a>, where <code>Json</code> can only store JSON objects and <code>Json_value</code> works with any JSON value.</p>
+<p>Setting up the store is exactly the same as when working with strings:</p>
+<pre><code class="language-ocaml">module Mem_store_json = Irmin_mem.KV(Irmin.Contents.Json)
+module Mem_store_json_value = Irmin_mem.KV(Irmin.Contents.Json_value)
+</code></pre>
+<p>For example, using <code>Men_store_json_value</code> we can assign <code>{&quot;x&quot;: 1, &quot;y&quot;: 2, &quot;z&quot;: 3}</code> to the key <code>a/b/c</code>:</p>
+<pre><code class="language-ocaml">let main =
+    let module Store = Mem_store_json_value in
+    Store.Repo.v config &gt;&gt;= Store.master &gt;&gt;= fun t -&gt;
+    let value = `O [&quot;x&quot;, `Float 1.; &quot;y&quot;, `Float 2.; &quot;z&quot;, `Float 3.] in
+    Store.set_exn t [&quot;a&quot;; &quot;b&quot;; &quot;c&quot;] value ~info:(info &quot;set a/b/c&quot;) &gt;&gt;= fun () -&gt;
+    Store.get t [&quot;a&quot;; &quot;b&quot;; &quot;c&quot;] &gt;|= fun x -&gt;
+    assert (Irmin.Type.equal Store.contents_t value x)
+let () = Lwt_main.run main
+</code></pre>
+<p>An interesting thing about <code>Json_value</code> stores is the ability to use <a href="https://mirage.github.io/irmin/irmin/Irmin/index.html#module-Json_tree">Json_tree</a> to recursively project values onto a key. This means that using <code>Json_tree.set</code>, to assign <code>{&quot;test&quot;: {&quot;foo&quot;: &quot;bar&quot;}, &quot;x&quot;: 1, &quot;y&quot;: 2, &quot;z&quot;: 3}</code> to the key <code>a/b/c</code> will set <code>a/b/c/x</code> to <code>1</code>, <code>a/b/c/y</code> to <code>2</code>, <code>a/b/c/z</code> to <code>3</code> and <code>a/b/c/test/foo</code> to <code>&quot;bar&quot;</code>.</p>
+<p>This allows for large JSON objects to be modified in pieces without having the encode/decode the entire thing to access specific fields. Using <code>Json_tree.get</code> we can also retrieve a tree as a JSON value. So if we call <code>Json_tree.get</code> with the key <code>a/b</code> we will get the following object back: <code>{&quot;c&quot;: {&quot;test&quot;: {&quot;foo&quot;: &quot;bar&quot;}, &quot;x&quot;: 1, &quot;y&quot;: 2, &quot;z&quot;: 3}}</code>.</p>
+<pre><code class="language-ocaml">let main =
+    let module Store = Mem_store_json_value in
+    let module Proj = Irmin.Json_tree(Store) in
+    Store.Repo.v config &gt;&gt;= Store.master &gt;&gt;= fun t -&gt;
+    let value = `O [&quot;test&quot;, `O [&quot;foo&quot;, `String &quot;bar&quot;]; &quot;x&quot;, `Float 1.; &quot;y&quot;, `Float 2.; &quot;z&quot;, `Float 3.] in
+    Proj.set t [&quot;a&quot;; &quot;b&quot;; &quot;c&quot;] value ~info:(info &quot;set a/b/c&quot;) &gt;&gt;= fun () -&gt;
+    Store.get t [&quot;a&quot;; &quot;b&quot;; &quot;c&quot;; &quot;x&quot;] &gt;&gt;= fun x -&gt;
+    assert (Irmin.Type.equal Store.contents_t (`Float 1.) x);
+    Store.get t [&quot;a&quot;; &quot;b&quot;; &quot;c&quot;; &quot;test&quot;; &quot;foo&quot;] &gt;&gt;= fun x -&gt;
+    assert (Irmin.Type.equal Store.contents_t (`String &quot;bar&quot;) x);
+    Proj.get t [&quot;a&quot;; &quot;b&quot;] &gt;|= fun x -&gt;
+    assert (Irmin.Type.equal Store.contents_t (`O [&quot;c&quot;, value]) x)
+let () = Lwt_main.run main
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="UsingTheCommandLine.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="Contents.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a href="UsingTheCommandLine.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a href="Contents.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>

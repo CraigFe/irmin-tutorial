@@ -1,0 +1,387 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Writing a storage backend - Irmin Tutorial</title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body class="light">
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">var path_to_root = "";</script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { } 
+            if (theme === null || theme === undefined) { theme = 'light'; }
+            document.body.className = theme;
+            document.querySelector('html').className = theme + ' js';
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <ol class="chapter"><li><a href="Introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="UsingTheCommandLine.html"><strong aria-hidden="true">2.</strong> Using the command-line</a></li><li><a href="GettingStartedOCaml.html"><strong aria-hidden="true">3.</strong> Getting started with OCaml</a></li><li><a href="Contents.html"><strong aria-hidden="true">4.</strong> Custom content types</a></li><li><a href="Backend.html" class="active"><strong aria-hidden="true">5.</strong> Writing a storage backend</a></li><li><a href="GraphQL.html"><strong aria-hidden="true">6.</strong> GraphQL bindings</a></li><li><a href="Resources.html"><strong aria-hidden="true">7.</strong> Resources</a></li></ol>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light <span class="default">(default)</span></button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                            
+                            <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                                <i class="fa fa-search"></i>
+                            </button>
+                            
+                        </div>
+
+                        <h1 class="menu-title">Irmin Tutorial</h1> 
+
+                        <div class="right-buttons">
+                            <a href="print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <a class="header" href="#writing-a-storage-backend" id="writing-a-storage-backend"><h1>Writing a storage backend</h1></a>
+<p>This section illustrates how to write a custom storage backend for Irmin using a simplified implementation of <a href="https://github.com/zshipko/irmin-redis">irmin-redis</a> as an example. <code>irmin-redis</code> uses a Redis server to store Irmin data.</p>
+<p>Unlike writing a <a href="Contents.html">custom datatype</a>, there is not a tidy way of doing this. Each backend must fulfill certain criteria as defined by <a href="https://mirage.github.io/irmin/irmin/Irmin/module-type-CONTENT_ADDRESSABLE_STORE_MAKER/index.html">Irmin.CONTENT_ADDRESSABLE_STORE_MAKER</a>, <a href="https://mirage.github.io/irmin/irmin/Irmin/module-type-ATOMIC_WRITE_STORE_MAKER/index.html">Irmin.ATOMIC_WRITE_STORE_MAKER</a>, <a href="https://mirage.github.io/irmin/irmin/Irmin/module-type-S_MAKER/index.html">Irmin.S_MAKER</a>, and <a href="https://mirage.github.io/irmin/irmin/Irmin/module-type-KV_MAKER/index.html">Irmin.KV_MAKER</a>. These module types define interfaces for functors that create stores. For example, a <code>KV_MAKER</code> defines a module that takes an <code>Irmin.Contents.S</code> as a parameter and returns a module of type <code>Irmin.KV</code>.</p>
+<a class="header" href="#redis-client" id="redis-client"><h2>Redis client</h2></a>
+<p>This examples uses the <a href="https://github.com/zshipko/ocaml-hiredis">hiredis</a> package to create connections, send and receive data from Redis servers. It is available on <a href="https://github.com/ocaml/opam">opam</a> under the same name.</p>
+<a class="header" href="#the-readonly-store" id="the-readonly-store"><h2>The readonly store</h2></a>
+<p>The process for writing a backend for Irmin requires implementing a few functors - the accomplish this, we can start of by writing a helper module that provides an generic implementation that can be re-used by the content-adressable store and the atomic-write store:</p>
+<ul>
+<li><code>t</code>: The store type</li>
+<li><code>key</code>: The key type</li>
+<li><code>value</code>: The value/content type</li>
+</ul>
+<pre><code class="language-ocaml">open Lwt.Infix
+open Hiredis
+</code></pre>
+<pre><code class="language-ocaml">module Helper (K: Irmin.Type.S) (V: Irmin.Type.S) = struct
+  type 'a t = (string * Client.t) (* Store type: Redis prefix and client *)
+  type key = K.t               (* Key type *)
+  type value = V.t             (* Value type *)
+</code></pre>
+<p>Additionally, it requires a few functions:</p>
+<ul>
+<li><code>v</code>: used to create a value of type <code>t</code></li>
+<li><code>mem</code>: checks whether or not a key exists</li>
+<li><code>find</code>: returns the value associated with a key (if it exists)</li>
+</ul>
+<p>Since an Irmin database requires a few levels of store types (links, objects, etc...) a prefix is needed to identify the store type in Redis or else several functions will return incorrect results. This is not an issue with the in-memory backend, since it is easy to just create an independent store for each type, however in this case, there will be several diffent store types on a single Redis instance.</p>
+<pre><code class="language-ocaml">  let v prefix config =
+    let module C = Irmin.Private.Conf in
+    let root = match C.get config C.root with
+      | Some root -&gt; root ^ &quot;:&quot; ^ prefix ^ &quot;:&quot;
+      | None -&gt; prefix ^ &quot;:&quot;
+    in
+    Lwt.return (root, Client.connect ~port:6379 &quot;127.0.0.1&quot;)
+</code></pre>
+<p><code>mem</code> is implemented using the <code>EXISTS</code> command, which checks for the exitence of a key in Redis:</p>
+<pre><code class="language-ocaml">  let mem (prefix, client) key =
+      let key = Irmin.Type.to_string K.t key in
+      match Client.run client [| &quot;EXISTS&quot;; prefix ^ key |] with
+      | Integer 1L -&gt; Lwt.return_true
+      | _ -&gt; Lwt.return_false
+</code></pre>
+<p><code>find</code> uses the <code>GET</code> command to retreive and key, if one isn't found or can't be decoded correctly then <code>find</code> returns <code>None</code>:</p>
+<pre><code class="language-ocaml">  let find (prefix, client) key =
+      let key = Irmin.Type.to_string K.t key in
+      match Client.run client [| &quot;GET&quot;; prefix ^ key |] with
+      | String s -&gt;
+          (match Irmin.Type.of_string V.t s with
+          | Ok s -&gt; Lwt.return_some s
+          | _ -&gt; Lwt.return_none)
+      | _ -&gt; Lwt.return_none
+end
+</code></pre>
+<a class="header" href="#the-content-adressable-store" id="the-content-adressable-store"><h3>The content-adressable store</h3></a>
+<p>Next is the content-adressable (<a href="https://mirage.github.io/irmin/irmin/Irmin/module-type-CONTENT_ADDRESSABLE_STORE/index.html">CONTENT_ADDRESSABLE_STORE</a>) interface - the majority of the required methods can be inherited from <code>Helper</code>!</p>
+<pre><code class="language-ocaml">module Content_adressable (K: Irmin.Hash.S) (V: Irmin.Type.S) = struct
+  include Helper(K)(V)
+  let v = v &quot;obj&quot;
+</code></pre>
+<p>This module needs an <code>add</code> function, which takes a value, hashes it, stores the association and returns the hash:</p>
+<pre><code class="language-ocaml">  let add (prefix, client) value =
+      let hash = K.digest (Irmin.Type.to_string V.t value) in
+      let key = Irmin.Type.to_string K.t hash in
+      let value = Irmin.Type.to_string V.t value in
+      ignore (Client.run client [| &quot;SET&quot;; prefix ^ key; value |]);
+      Lwt.return hash
+</code></pre>
+<p>Then a <code>batch</code> function, which can be used to group writes together. We will use the most basic implementation:</p>
+<pre><code class="language-ocaml">  let batch (prefix, client) f =
+    let _ = Client.run client [| &quot;MULTI&quot; |] in
+    f (prefix, client) &gt;|= fun result -&gt;
+    let _ = Client.run client [| &quot;EXEC&quot; |] in
+    result
+end
+</code></pre>
+<a class="header" href="#the-atomic-write-store" id="the-atomic-write-store"><h2>The atomic-write store</h2></a>
+<p>The <a href="https://mirage.github.io/irmin/irmin/Irmin/module-type-ATOMIC_WRITE_STORE/index.html">ATOMIC_WRITE_STORE</a> has many more types and values that need to be defined than the previous examples, but luckily this is the last step!</p>
+<p>To start off we can use the <code>Helper</code> functor defined above:</p>
+<pre><code class="language-ocaml">module Atomic_write (K: Irmin.Type.S) (V: Irmin.Type.S) = struct
+  module H = Helper(K)(V)
+</code></pre>
+<p>There are a few types we need to declare next. <code>key</code> and <code>value</code> should match <code>H.key</code> and <code>H.value</code> and <code>watch</code> is used to declare the type of the watcher -- this is used to send notifications when the store has been updated. <a href="https://github.com/mirage/irmin-watcher">irmin-watcher</a> has some more information on watchers.</p>
+<pre><code class="language-ocaml">  module W = Irmin.Private.Watch.Make(K)(V)
+  type t = { t: [`Write] H.t; w: W.t }  (* Store type *)
+  type key = H.key             (* Key type *)
+  type value = H.value         (* Value type *)
+  type watch = W.watch          (* Watch type *)
+</code></pre>
+<p>The <code>watches</code> variable defined below creates a context used to track active watches.</p>
+<pre><code class="language-ocaml">  let watches = W.v ()
+</code></pre>
+<p>Again, we need a <code>v</code> function for creating a value of type <code>t</code>:</p>
+<pre><code class="language-ocaml">  let v config =
+    H.v &quot;data&quot; config &gt;&gt;= fun t -&gt;
+    Lwt.return {t; w = watches }
+</code></pre>
+<p>The next few functions (<code>find</code> and <code>mem</code>) are just wrappers around the implementations in <code>H</code>:</p>
+<pre><code class="language-ocaml">  let find t = H.find t.t
+  let mem t  = H.mem t.t
+</code></pre>
+<p>A few more simple functions: <code>watch_key</code>, <code>watch</code> and <code>unwatch</code>, used to created or destroy watches:</p>
+<pre><code class="language-ocaml">  let watch_key t key = W.watch_key t.w key
+  let watch t = W.watch t.w
+  let unwatch t = W.unwatch t.w
+</code></pre>
+<p>We will need to implement a few more functions:</p>
+<ul>
+<li><code>list</code>, lists files at a specific path.</li>
+<li><code>set</code>, writes a value to the store.</li>
+<li><code>remove</code>, deletes a value from the store.</li>
+<li><code>test_and_set</code>, modifies a key only if the <code>test</code> value matches the current value for the given key.</li>
+</ul>
+<p>The <code>list</code> implementation will get a list of keys from Redis using the <code>KEYS</code> command then convert them from strings to <code>Store.key</code> values:</p>
+<pre><code class="language-ocaml">  let list {t = (prefix, client); _} =
+      match Client.run client [| &quot;KEYS&quot;; prefix ^ &quot;*&quot; |] with
+      | Array arr -&gt;
+          Array.map (fun k -&gt;
+            Irmin.Type.of_string K.t (Value.to_string k)
+          ) arr
+          |&gt; Array.to_list
+          |&gt; Lwt_list.filter_map_s (function
+            | Ok s -&gt; Lwt.return_some s
+            | _ -&gt; Lwt.return_none)
+      | _ -&gt; Lwt.return []
+</code></pre>
+<p><code>set</code> just encodes the keys and values as strings, then uses the Redis <code>SET</code> command to store them:</p>
+<pre><code class="language-ocaml">  let set {t = (prefix, client); w} key value =
+      let key' = Irmin.Type.to_string K.t key in
+      let value' = Irmin.Type.to_string V.t value in
+      match Client.run client [| &quot;SET&quot;; prefix ^ key'; value' |] with
+      | Status &quot;OK&quot; -&gt; W.notify w key (Some value)
+      | _ -&gt; Lwt.return_unit
+</code></pre>
+<p><code>remove</code> uses the Redis <code>DEL</code> command to remove stored values:</p>
+<pre><code class="language-ocaml">  let remove {t = (prefix, client); w} key =
+      let key' = Irmin.Type.to_string K.t key in
+      ignore (Client.run client [| &quot;DEL&quot;; prefix ^ key' |]);
+      W.notify w key None
+</code></pre>
+<p><code>test_and_set</code> will modify a key if the current value is equal to <code>test</code>. This requires an atomic check and set, which can be done using <code>WATCH</code>, <code>MULTI</code> and <code>EXEC</code> in Redis:</p>
+<pre><code class="language-ocaml">  let test_and_set t key ~test ~set:set_value =
+    (* A helper function to execute a command in a Redis transaction *)
+    let txn client args =
+      ignore @@ Client.run client [| &quot;MULTI&quot; |];
+      ignore @@ Client.run client args;
+      Client.run client [| &quot;EXEC&quot; |] &lt;&gt; Nil
+    in
+    let prefix, client = t.t in
+    let key' = Irmin.Type.to_string K.t key in
+    (* Start watching the key in question *)
+    ignore @@ Client.run client [| &quot;WATCH&quot;; prefix ^ key' |];
+    (* Get the existing value *)
+    find t key &gt;&gt;= fun v -&gt;
+    (* Check it against [test] *)
+    if Irmin.Type.(equal (option V.t)) test v then (
+      (match set_value with
+        | None -&gt; (* Remove the key *)
+            if txn client [| &quot;DEL&quot;; prefix ^ key' |] then
+              W.notify t.w key None &gt;&gt;= fun () -&gt;
+              Lwt.return_true
+            else
+              Lwt.return_false
+        | Some value -&gt; (* Update the key *)
+            let value' = Irmin.Type.to_string V.t value in
+            if txn client [| &quot;SET&quot;; prefix ^ key'; value' |] then
+              W.notify t.w key set_value &gt;&gt;= fun () -&gt;
+              Lwt.return_true
+            else
+              Lwt.return_false
+      ) &gt;&gt;= fun ok -&gt;
+      Lwt.return ok
+    ) else (
+      ignore @@ Client.run client [| &quot;UNWATCH&quot;; prefix ^ key' |];
+      Lwt.return_false
+    )
+end
+</code></pre>
+<p>Finally, add <code>Make</code> and <code>KV</code> functors for creating Redis-backed Irmin stores:</p>
+<pre><code class="language-ocaml">module Make: Irmin.S_MAKER = Irmin.Make(Content_adressable)(Atomic_write)
+
+module KV: Irmin.KV_MAKER = functor (C: Irmin.Contents.S) -&gt;
+  Make
+    (Irmin.Metadata.None)
+    (C)
+    (Irmin.Path.String_list)
+    (Irmin.Branch.String)
+    (Irmin.Hash.SHA1)
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="Contents.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="GraphQL.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a href="Contents.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a href="GraphQL.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>

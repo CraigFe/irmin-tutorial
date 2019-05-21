@@ -1,0 +1,430 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Custom content types - Irmin Tutorial</title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body class="light">
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">var path_to_root = "";</script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { } 
+            if (theme === null || theme === undefined) { theme = 'light'; }
+            document.body.className = theme;
+            document.querySelector('html').className = theme + ' js';
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <ol class="chapter"><li><a href="Introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="UsingTheCommandLine.html"><strong aria-hidden="true">2.</strong> Using the command-line</a></li><li><a href="GettingStartedOCaml.html"><strong aria-hidden="true">3.</strong> Getting started with OCaml</a></li><li><a href="Contents.html" class="active"><strong aria-hidden="true">4.</strong> Custom content types</a></li><li><a href="Backend.html"><strong aria-hidden="true">5.</strong> Writing a storage backend</a></li><li><a href="GraphQL.html"><strong aria-hidden="true">6.</strong> GraphQL bindings</a></li><li><a href="Resources.html"><strong aria-hidden="true">7.</strong> Resources</a></li></ol>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light <span class="default">(default)</span></button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                            
+                            <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                                <i class="fa fa-search"></i>
+                            </button>
+                            
+                        </div>
+
+                        <h1 class="menu-title">Irmin Tutorial</h1> 
+
+                        <div class="right-buttons">
+                            <a href="print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <a class="header" href="#custom-content-types" id="custom-content-types"><h1>Custom content types</h1></a>
+<p>At some point working with <code>Irmin</code> you will probably want to move beyond using the default content types.</p>
+<p>This section will explain how custom datatypes can be implemented using <a href="https://mirage.github.io/irmin/irmin/Irmin/Type/index.html">Irmin.Type</a>. Before continuing with these examples make sure to read through the <a href="https://docs.mirage.io/irmin/Irmin/Type/index.html">official documentation</a>, which has information about the predefined types and how they're used.</p>
+<p>Now that you've read through the documentation, let's create some contents by defining the functions required by the <a href="https://docs.mirage.io/irmin/Irmin/Contents/module-type-S/index.html">Irmin.Contents.S</a> interface. This section will walk you through a few different examples:</p>
+<ul>
+<li><a href="#counter">Counter</a></li>
+<li><a href="#record">Record</a></li>
+<li><a href="#association-list">Association list</a></li>
+<li><a href="#lww-register">LWW register</a></li>
+</ul>
+<a class="header" href="#overview" id="overview"><h2>Overview</h2></a>
+<p>To create a content type you need to define the following:</p>
+<ul>
+<li>A type <code>t</code></li>
+<li>A value <code>t</code> of type <code>Irmin.Type.t</code></li>
+<li>A function <code>pp</code> for formatting <code>t</code></li>
+<li>A function <code>of_string</code> for converting from <code>string</code> to <code>t</code></li>
+<li>A function <code>merge</code>, which performs a three-way merge</li>
+</ul>
+<a class="header" href="#counter" id="counter"><h2>Counter</h2></a>
+<p>A counter is just a simple <code>int64</code> value that can be incremented and decremented, when counters are merged the values will be added together.</p>
+<p>To get started, you will need to define a type <code>t</code> and build a value <code>t</code> using the functions provided in <a href="https://docs.mirage.io/irmin/Irmin/Type/index.html">Irmin.Type</a>. In this case all we need is the existing <code>int64</code> value, but in most cases it won't be this simple!</p>
+<pre><code class="language-ocaml">module Counter: Irmin.Contents.S with type t = int64 = struct
+    type t = int64
+    let t = Irmin.Type.int64
+</code></pre>
+<p>Next we will need to define some functions for converting to and from strings.</p>
+<pre><code class="language-ocaml">    let pp fmt = Format.fprintf fmt &quot;%Ld&quot;
+</code></pre>
+<p><code>pp</code> defines a pretty-printer for our type.</p>
+<pre><code class="language-ocaml">    let of_string s =
+        match Int64.of_string_opt s with
+        | Some i -&gt; Ok i
+        | None -&gt; Error (`Msg &quot;invalid counter value&quot;)
+</code></pre>
+<p>And <code>of_string</code> is used to convert a formatted string back to our original type. It returns <code>(t, [`Msg of string]) result</code>, which allows for an error message to be passed back to the user if the value is invalid.</p>
+<p>Finally, we need to define a merge function.  There is already a <code>counter</code> implementation available in <a href="https://docs.mirage.io/irmin/Irmin/Merge/index.html">Irmin.Merge</a>, so you wouldn't actually need to write this yourself:</p>
+<pre><code class="language-ocaml">    let merge ~old a b =
+        let open Irmin.Merge.Infix in
+        old () &gt;|=* fun old -&gt;
+        let old = match old with None -&gt; 0L | Some o -&gt; o in
+        let (+) = Int64.add and (-) = Int64.sub in
+        a + b - old
+</code></pre>
+<pre><code class="language-ocaml">    let merge = Irmin.Merge.(option (v t merge))
+end
+</code></pre>
+<p>If we were to leverage the existing implementation it would be even simpler:</p>
+<pre><code class="language-ocaml">let merge = Irmin.Merge.(option counter)
+</code></pre>
+<p>Now this <code>Counter</code> module can be used as the contents of an Irmin store:</p>
+<pre><code class="language-ocaml">module Counter_mem_store = Irmin_mem.KV(Counter)
+</code></pre>
+<a class="header" href="#record" id="record"><h2>Record</h2></a>
+<p>In this example I will wrap a record type so it can be stored directly in Irmin.</p>
+<p>Here is a <code>car</code> type that we will use as content type for our store:</p>
+<pre><code class="language-ocaml">type color =
+    | Black
+    | White
+    | Other of string
+type car = {
+    license: string;
+    year: int32;
+    make_and_model: string * string;
+    color: color;
+    owner: string;
+}
+</code></pre>
+<p>First color has to be wrapped, variants are modeled using the <a href="https://mirage.github.io/irmin/irmin/Irmin/Type/index.html#val-variant">variant</a> function:</p>
+<pre><code class="language-ocaml">module Car = struct
+    type t  = car
+    let color =
+        let open Irmin.Type in
+        variant &quot;color&quot; (fun black white other -&gt; function
+            | Black -&gt; black
+            | White -&gt; white
+            | Other color -&gt; other color)
+        |~ case0 &quot;Black&quot; Black
+        |~ case0 &quot;White&quot; White
+        |~ case1 &quot;Other&quot; string (fun s -&gt; Other s)
+        |&gt; sealv
+</code></pre>
+<p>This is mapping variant cases to their names in string representation. Records are handled similarly:</p>
+<pre><code class="language-ocaml">    let t =
+        let open Irmin.Type in
+        record &quot;car&quot; (fun license year make_and_model color owner -&gt;
+            {license; year; make_and_model; color; owner})
+        |+ field &quot;license&quot; string (fun t -&gt; t.license)
+        |+ field &quot;year&quot; int32 (fun t -&gt; t.year)
+        |+ field &quot;make_and_model&quot; (pair string string) (fun t -&gt; t.make_and_model)
+        |+ field &quot;color&quot; color (fun t -&gt; t.color)
+        |+ field &quot;owner&quot; string (fun t -&gt; t.owner)
+        |&gt; sealr
+</code></pre>
+<p>Finally, we can use the builtin JSON encoding and merge function:</p>
+<pre><code class="language-ocaml">    let pp = Irmin.Type.pp_json t
+</code></pre>
+<p>This example uses <a href="https://mirage.github.io/irmin/irmin/Irmin/Type/index.html#val-pp_json">Irmin.Type.pp_json</a> and <a href="https://mirage.github.io/irmin/irmin/Irmin/Type/index.html#val-decode_json">Irmin.Type.decode_json</a> , the predefined JSON pretty-printer and parser, rather than writing our own. As types get more and more complex it is very nice to be able to use the JSON formatter to avoid having to write ad-hoc functions for encoding and decoding values.</p>
+<pre><code class="language-ocaml">    let of_string s =
+        let decoder = Jsonm.decoder (`String s) in
+        Irmin.Type.decode_json t decoder
+</code></pre>
+<p>And the merge operation:</p>
+<pre><code class="language-ocaml">    let merge = Irmin.Merge.(option (idempotent t))
+end
+</code></pre>
+<p>Now some examples using <code>Car</code> -- we will map Vehicle Identification Number to a car record, this could be used by a tow company or an auto shop to identify cars:</p>
+<pre><code class="language-ocaml">open Lwt.Infix
+module Car_store = Irmin_mem.KV(Car)
+
+let car_a = {
+    color = Other &quot;green&quot;;
+    license = &quot;ABCD123&quot;;
+    year = 2002l;
+    make_and_model = (&quot;Honda&quot;, &quot;Accord&quot;);
+    owner = &quot;Jane Doe&quot;;
+}
+
+let car_b = {
+    color = Black;
+    license = &quot;MYCAR00&quot;;
+    year = 2016l;
+    make_and_model = (&quot;Toyota&quot;, &quot;Corolla&quot;);
+    owner = &quot;Mike Jones&quot;;
+}
+
+let add_car store car_number car =
+    let info = Irmin_unix.info &quot;added %s&quot; car_number in
+    Car_store.set_exn store [car_number] car ~info
+
+let main =
+    let config = Irmin_mem.config () in
+    Car_store.Repo.v config &gt;&gt;= Car_store.master &gt;&gt;= fun t -&gt;
+    add_car t &quot;5Y2SR67049Z456146&quot; car_a &gt;&gt;= fun () -&gt;
+    add_car t &quot;2FAFP71W65X110910&quot; car_b &gt;&gt;= fun () -&gt;
+    Car_store.get t [&quot;2FAFP71W65X110910&quot;] &gt;|= fun car -&gt;
+    assert (car.license = car_b.license);
+    assert (car.year = car_b.year)
+
+let () = Lwt_main.run main
+</code></pre>
+<a class="header" href="#association-list" id="association-list"><h2>Association list</h2></a>
+<p>In this example we will define an association list that maps string keys to string values. The type itself is not very complicated, but the merge function is even more complex than the previous two examples.</p>
+<p>Like the two examples above, you need to define a <code>t</code> type and a <code>t</code> value of type <code>Irmin.Type.t</code> to begin:</p>
+<pre><code class="language-ocaml">module Object = struct
+    type t = (string * string) list
+    let t = Irmin.Type.(list (pair string string))
+</code></pre>
+<p>So far so good, Irmin provides a simple way to model a list of pairs! Now we can use the JSON encoder again, just like in the previous example.</p>
+<p>Define <code>pp</code>:</p>
+<pre><code class="language-ocaml">    let pp = Irmin.Type.pp_json t
+</code></pre>
+<p>And <code>of_string</code>:</p>
+<pre><code class="language-ocaml">    let of_string s =
+        let decoder = Jsonm.decoder (`String s) in
+        Irmin.Type.decode_json t decoder
+</code></pre>
+<p>To write the merge function we can leverage <code>Irmin.Merge.alist</code>, which simplifies this process for association lists. In this example we are using strings for both the keys and values, however in most other cases <code>alist</code> can get a bit more complicated since it requires existing merge functions for both the key and value types. For a slightly more complicated example you can read through <code>merge_object</code> and <code>merge_value</code> in <a href="https://github.com/mirage/irmin/blob/master/src/irmin/contents.ml">contents.ml</a>, which are used to implement JSON contents for Irmin.</p>
+<pre><code class="language-ocaml">    let merge_alist =
+        Irmin.Merge.(alist Irmin.Type.string Irmin.Type.string (fun _key -&gt; option string))
+    let merge = Irmin.Merge.(option merge_alist)
+end
+</code></pre>
+<a class="header" href="#lww-register" id="lww-register"><h2>LWW register</h2></a>
+<p>A last-write-wins register is similar to a basic Irmin store, except on merge the most recently written value will be picked rather than trying to merge the values.</p>
+<p>First, this requires a way to get a timestamp - we will make this as generic as possible so it can be used on unix or MirageOS:</p>
+<pre><code class="language-ocaml">module type TIMESTAMP = sig
+    val now: unit -&gt; int64
+end
+</code></pre>
+<p>On unix this can be implemented <code>Unix.gettimeofday</code>:</p>
+<pre><code class="language-ocaml">module Timestamp = struct
+    let now () = Int64.of_float @@ Unix.gettimeofday () *. 100000.
+end
+</code></pre>
+<p><code>Lww_register</code> will be defined a functor that wraps an exsiting content type:</p>
+<pre><code class="language-ocaml">module Lww_register (Time: TIMESTAMP) (C: Irmin.Type.S) = struct
+    type t = C.t * int64
+    let t =
+        Irmin.Type.(pair C.t int64)
+</code></pre>
+<p>A convenience function for adding a timestamp to a <code>C.t</code> value:</p>
+<pre><code class="language-ocaml">    let v c = (c, Time.now ())
+</code></pre>
+<p>The same <code>pp</code> and <code>to_string</code> implementations as the previous examples:</p>
+<pre><code class="language-ocaml">    let pp = Irmin.Type.pp_json t
+    let of_string s =
+        let decoder = Jsonm.decoder (`String s) in
+        Irmin.Type.decode_json t decoder
+</code></pre>
+<p>The merge operation for <code>Lww_register</code> is slightly different than the ones covered so far. It will not attempt to merge any values, instead it will pick the newest value based on the attached timestamp.</p>
+<pre><code class="language-ocaml">    let merge ~old (a, timestamp_a) (b, timestamp_b) =
+        match Int64.compare timestamp_a timestamp_b with
+        | 0 -&gt;
+            if Irmin.Type.equal C.t a b then
+                Irmin.Merge.ok (a, timestamp_a)
+            else
+                let msg = &quot;Conflicting entries have the same timestamp but different values&quot; in
+                Irmin.Merge.conflict &quot;%s&quot; msg
+        | 1 -&gt; Irmin.Merge.ok (a, timestamp_a)
+        | _ -&gt; Irmin.Merge.ok (b, timestamp_b)
+    let merge = Irmin.Merge.(option (v t merge))
+end
+</code></pre>
+<p>An example using <code>Lww_register</code>:</p>
+<pre><code class="language-ocaml">open Lwt.Infix
+module Value = Lww_register(Timestamp)(Irmin.Contents.String)
+module Store = Irmin_mem.KV(Value)
+let main =
+    (* Configure the repo *)
+    let cfg = Irmin_mem.config () in
+    (* Access the master branch *)
+    Store.Repo.v cfg &gt;&gt;= Store.master &gt;&gt;= fun master -&gt;
+    (* Set [foo] to [&quot;bar&quot;] on master branch *)
+    Store.set_exn master [&quot;foo&quot;] (Value.v &quot;bar&quot;) ~info:(Irmin_unix.info &quot;set foo on master branch&quot;) &gt;&gt;= fun () -&gt;
+    (* Access example branch *)
+    Store.Repo.v cfg &gt;&gt;= fun repo -&gt; Store.of_branch repo &quot;example&quot; &gt;&gt;= fun example -&gt;
+    (* Set [foo] to [&quot;baz&quot;] on example branch *)
+    Store.set_exn example [&quot;foo&quot;] (Value.v &quot;baz&quot;) ~info:(Irmin_unix.info &quot;set foo on example branch&quot;) &gt;&gt;= fun () -&gt;
+    (* Merge the example into master branch *)
+    Store.merge_into ~into:master example ~info:(Irmin_unix.info &quot;merge example into master&quot;) &gt;&gt;= function
+    | Ok () -&gt;
+        (* Check that [foo] is set to [&quot;baz&quot;] after the merge *)
+        Store.get master [&quot;foo&quot;] &gt;|= fun (foo, _) -&gt;
+        assert (foo = &quot;baz&quot;)
+    | Error conflict -&gt;
+        let fmt = Irmin.Type.pp_json Irmin.Merge.conflict_t in
+        Lwt_io.printl (Fmt.to_to_string fmt conflict)
+let () = Lwt_main.run main
+</code></pre>
+<p>If you'd like another example then check out the <a href="https://github.com/mirage/irmin/blob/master/examples/custom_merge.ml">custom merge</a> example in the Irmin repository, which illustrates how to write a mergeable log.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="GettingStartedOCaml.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="Backend.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a href="GettingStartedOCaml.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a href="Backend.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>

@@ -1,0 +1,1047 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Irmin Tutorial</title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body class="light">
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">var path_to_root = "";</script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { } 
+            if (theme === null || theme === undefined) { theme = 'light'; }
+            document.body.className = theme;
+            document.querySelector('html').className = theme + ' js';
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <ol class="chapter"><li><a href="Introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="UsingTheCommandLine.html"><strong aria-hidden="true">2.</strong> Using the command-line</a></li><li><a href="GettingStartedOCaml.html"><strong aria-hidden="true">3.</strong> Getting started with OCaml</a></li><li><a href="Contents.html"><strong aria-hidden="true">4.</strong> Custom content types</a></li><li><a href="Backend.html"><strong aria-hidden="true">5.</strong> Writing a storage backend</a></li><li><a href="GraphQL.html"><strong aria-hidden="true">6.</strong> GraphQL bindings</a></li><li><a href="Resources.html"><strong aria-hidden="true">7.</strong> Resources</a></li></ol>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light <span class="default">(default)</span></button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                            
+                            <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                                <i class="fa fa-search"></i>
+                            </button>
+                            
+                        </div>
+
+                        <h1 class="menu-title">Irmin Tutorial</h1> 
+
+                        <div class="right-buttons">
+                            <a href="print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <a class="header" href="#introduction" id="introduction"><h1>Introduction</h1></a>
+<p><a href="https://github.com/mirage/irmin">Irmin</a> is a key-value store based on the same priciples as Git. This means that for existing Git users it provides many familiar features: branching/merging, history and the ability to restore to any previous state.</p>
+<p>Typically Irmin is accessed by embedding it into an OCaml application, but can also be accessed using HTTP using <code>irmin-http</code> or GraphQL using <code>irmin-graphql</code>. It is most often used to store application data, like configuration values, shared state or checkpoint data, but there is nothing stopping you from using it as a general purpose key-value store too. Additionally, since it is compatible with Git, Irmin can be used to interact with Git repositories directly from within your application.</p>
+<p>Take a moment to skim the <a href="https://github.com/mirage/irmin/blob/master/README.md">README</a> to familiarize yourself with some of the concepts. Also, if you find that anything is missing or unclear in this tutorial then please file <a href="https://github.com/zshipko/irmin-tutorial/issues">an issue</a>!</p>
+<a class="header" href="#using-the-command-line" id="using-the-command-line"><h1>Using the command-line</h1></a>
+<a class="header" href="#installation" id="installation"><h2>Installation</h2></a>
+<p>These examples requires the <code>irmin-unix</code> package to be installed from <a href="https://github.com/ocaml/opam">opam</a>:</p>
+<pre><code class="language-shell">$ opam install irmin-unix
+</code></pre>
+<p>After that is finished you should have the <code>irmin</code> binary installed! To get a list of commands run:</p>
+<pre><code class="language-shell">$ irmin help
+</code></pre>
+<a class="header" href="#working-with-stores" id="working-with-stores"><h2>Working with stores</h2></a>
+<p>Now you can do things like create an in-memory store and serve it over HTTP:</p>
+<pre><code class="language-shell">$ irmin init --daemon --store mem --address http://127.0.0.1:8888
+</code></pre>
+<p>Or create a new store on-disk and manipulate it directly from the terminal:</p>
+<pre><code class="language-shell">$ export EXAMPLE=/tmp/irmin/example
+$ mkdir -p $EXAMPLE
+$ irmin set -s git --root $EXAMPLE &quot;My key&quot; &quot;My value&quot;
+$ irmin get -s git --root $EXAMPLE &quot;My key&quot;
+My value
+$ irmin remove -s git --root $EXAMPLE &quot;My key&quot;
+</code></pre>
+<p>We can also list the contents of the store in a couple of ways. <code>irmin tree</code> is used to inspect the contents of the store and <code>irmin list $KEY</code> is used to list the contents under a specific path.</p>
+<pre><code class="language-shell">$ irmin set -s git --root $EXAMPLE a/b/c 123
+$ irmin set -s git --root $EXAMPLE x 0
+$ irmin list -s git --root $EXAMPLE /
+DIR a
+FILE x
+$ irmin list -s git --root $EXAMPLE /a
+DIR b
+$ irmin list -s git --root $EXAMPLE /a/b
+FILE c
+$ irmin tree -s git --root $EXAMPLE
+/a/b/c...............................................................................123
+/x.....................................................................................0
+</code></pre>
+<a class="header" href="#configuration" id="configuration"><h2>Configuration</h2></a>
+<p>If you get sick of passing around <code>--root</code> all the time you can create a configuration file called <code>./irmin.yml</code> or <code>~/.irmin/config.yml</code> with global configuration options:</p>
+<pre><code class="language-yaml">root: /tmp/irmin/example
+store: git
+content: string
+</code></pre>
+<p>See the output of <code>irmin help irmin.yml</code> for a list of configurable parameters.</p>
+<a class="header" href="#starting-a-graphql-server" id="starting-a-graphql-server"><h2>Starting a GraphQL server</h2></a>
+<p><code>irmin</code> comes with a built-in <a href="https://graphql.org">GraphQL</a> server, which can be used to easily query/modify a store remotely:</p>
+<pre><code class="language-shell">$ irmin graphql --port 8080
+</code></pre>
+<p>To verify the GraphQL server is up and running, you can try the following query:</p>
+<pre><code class="language-shell">$ curl http://localhost:8080/graphql -d '{&quot;query&quot;: &quot;query { master { head { hash } } }&quot;}'
+{&quot;data&quot;:{&quot;master&quot;:{&quot;head&quot;:{&quot;hash&quot;:&quot;2a16cd7d8e27d134e6194140617d25d977441396&quot;}}}}
+</code></pre>
+<p>You can also visit <a href="http://localhost:8080/graphql">http://localhost:8080/graphql</a> for an interactive environment for writing GraphQL queries. Of course, you're also free to use your GraphQL client of choice!</p>
+<a class="header" href="#snapshotrevert" id="snapshotrevert"><h2>Snapshot/revert</h2></a>
+<p>To get a reference to the current state of the database:</p>
+<pre><code class="language-shell">$ irmin snapshot
+7941ae769181f4fbf5056d8b2bfe1cd8e10928bd
+</code></pre>
+<p>And to restore to that point:</p>
+<pre><code class="language-shell">$ irmin revert 7941ae769181f4fbf5056d8b2bfe1cd8e10928bd
+</code></pre>
+<a class="header" href="#git-compatibility" id="git-compatibility"><h2>Git compatibility</h2></a>
+<p><code>irmin</code> and <code>git</code> can be used interchangeably to inspect and modify a repository, for instance here are some examples of operations that can be achieved using either git or Irmin.</p>
+<a class="header" href="#cloning-a-remote-repository" id="cloning-a-remote-repository"><h3>Cloning a remote repository</h3></a>
+<pre><code class="language-shell">$ irmin clone -s git $GIT_REPO_URL
+</code></pre>
+<pre><code class="language-shell">$ git clone $GIT_REPO_URL
+</code></pre>
+<a class="header" href="#restoring-to-a-previous-commit" id="restoring-to-a-previous-commit"><h3>Restoring to a previous commit</h3></a>
+<pre><code class="language-shell">$ irmin revert -s git $COMMIT_HASH
+</code></pre>
+<pre><code class="language-shell">$ git reset --hard $COMMIT_HASH
+</code></pre>
+<a class="header" href="#pushing-to-a-remote-repository" id="pushing-to-a-remote-repository"><h3>Pushing to a remote repository</h3></a>
+<pre><code class="language-shell">$ irmin push -s git $GIT_REPO_URL
+</code></pre>
+<pre><code class="language-shell">$ git push $GIT_REPO_URL master
+</code></pre>
+<p>As you can see, the command-line application has many capabilities, but it's just a fraction of what's available when using Irmin from OCaml! For more information about using Irmin and OCaml, check out the <a href="GettingStartedOCaml.html">next section</a>.</p>
+<a class="header" href="#getting-started-using-ocaml" id="getting-started-using-ocaml"><h1>Getting started using OCaml</h1></a>
+<p>When setting up and Irmin database in OCaml you will need to consider, at least, the content type and storage backend. This is because Irmin has the ability to adapt to existing data structures using a convenient type combinator (<a href="https://mirage.github.io/irmin/irmin/Irmin/Type/index.html">Irmin.Type</a>), which is used to define <a href="https://mirage.github.io/irmin/irmin/Irmin/Contents/index.html">contents</a> for your datastore. Irmin provides implementations for <a href="https://mirage.github.io/irmin/irmin/Irmin/Contents/index.html#module-String">String</a>, <a href="https://mirage.github.io/irmin/irmin/Irmin/Contents/index.html#module-Cstruct">Cstruct</a>, <a href="https://mirage.github.io/irmin/irmin/Irmin/Contents/index.html#module-Json">Json</a> and <a href="https://mirage.github.io/irmin/irmin/Irmin/Contents/index.html#module-Json_value">Json_value</a> contents, but it is also very easy to make your own!</p>
+<p>Irmin give you a few options a few options when it comes to storage: an in-memory store (<code>irmin-mem</code>), a filesystem store (<code>irmin-fs</code>) and git-compatible filesystem/in-memory stores (<code>irmin-git</code>). These packages define the way that the data should be organized, but not any I/O routines (with the exception of <code>irmin-mem</code>, which does no I/O). Luckily, <code>irmin-unix</code> implements the I/O routines needed to make Irmin work on unix-like platforms. Additionally, the <code>irmin-mirage</code>, <code>irmin-mirage-git</code> and <code>irmin-mirage-graphql</code> packages provide <a href="https://mirage.io">Mirage</a> compatible interfaces.</p>
+<p>It's also possible to implement your own storage backend if you'd like -- nearly everything in <code>Irmin</code> is configurable thanks to the power of functors in OCaml! This includes the hash function, branch, key and metadata types. Because of this flexibility there are a lot of different options to pick from; I will do my best to explain the most basic usage in this section and begin introducing more advanced concepts in subsequent sections.</p>
+<p>It is important to note that most <code>Irmin</code> functions return <code>Lwt.t</code> values, which means that you will need to use <code>Lwt_main.run</code> to execute them. If you're not familiar with <a href="https://github.com/ocsigen/lwt">Lwt</a> then I suggest <a href="https://mirage.io/wiki/tutorial-lwt">this tutorial</a>.</p>
+<a class="header" href="#creating-a-store" id="creating-a-store"><h2>Creating a store</h2></a>
+<p>An in-memory store with string contents:</p>
+<pre><code class="language-ocaml">module Mem_store = Irmin_mem.KV(Irmin.Contents.String)
+</code></pre>
+<p>An on-disk git store with JSON contents:</p>
+<pre><code class="language-ocaml">module Git_store = Irmin_unix.Git.FS.KV(Irmin.Contents.Json)
+</code></pre>
+<p>These examples are using <a href="https://mirage.github.io/irmin/irmin/Irmin/module-type-KV/index.html">Irmin.KV</a>, which is a specialization of <a href="https://mirage.github.io/irmin/irmin/Irmin/module-type-S/index.html">Irmin.S</a> with string list keys, string branches and no metadata.</p>
+<p>The following example is the same as the first, using <code>Irmin_mem.Make</code> instead of <code>Irmin_mem.KV</code>:</p>
+<pre><code class="language-ocaml">module Mem_Store =
+    Irmin_mem.Make
+        (Irmin.Metadata.None)
+        (Irmin.Contents.Json)
+        (Irmin.Path.String_list)
+        (Irmin.Branch.String)
+        (Irmin.Hash.SHA1)
+</code></pre>
+<a class="header" href="#configuring-and-creating-a-repo" id="configuring-and-creating-a-repo"><h2>Configuring and creating a repo</h2></a>
+<p>Different store types require different configuration options -- an on-disk store needs to know where it should be stored in the filesystem, however an in-memory store doesn't. This means that each storage backend implements its own configuration methods based on <a href="https://mirage.github.io/irmin/irmin/Irmin/Private/Conf/index.html">Irmin.Private.Conf</a> - for the examples above there are <code>Irmin_mem.config</code>, <code>Irmin_fs.config</code> and <code>Irmin_git.config</code>, each taking slightly different parameters.</p>
+<pre><code class="language-ocaml">let git_config = Irmin_git.config ~bare:true &quot;/tmp/irmin&quot;
+</code></pre>
+<pre><code class="language-ocaml">let config = Irmin_mem.config ()
+</code></pre>
+<p>With this configuration it's very easy to create an <a href="https://mirage.github.io/irmin/irmin/Irmin/Repo/index.html">Irmin.Repo</a> using <a href="https://mirage.github.io/irmin/irmin/Irmin/Make/Repo/index.html#val-v">Repo.v</a>:</p>
+<pre><code class="language-ocaml">let git_repo = Git_store.Repo.v git_config
+</code></pre>
+<pre><code class="language-ocaml">let repo = Mem_store.Repo.v config
+</code></pre>
+<a class="header" href="#using-the-repo-to-obtain-access-to-a-branch" id="using-the-repo-to-obtain-access-to-a-branch"><h2>Using the repo to obtain access to a branch</h2></a>
+<p>Once a repo has been created, you can access a branch and start to modify it.</p>
+<p>To get access to the <code>master</code> branch:</p>
+<pre><code class="language-ocaml">open Lwt.Infix
+
+let master config =
+    Mem_store.Repo.v config &gt;&gt;= Mem_store.master
+</code></pre>
+<p>To get access to a named branch:</p>
+<pre><code class="language-ocaml">let branch config name =
+    Mem_store.Repo.v config &gt;&gt;= fun repo -&gt;
+    Mem_store.of_branch repo name
+</code></pre>
+<a class="header" href="#modifying-the-store" id="modifying-the-store"><h2>Modifying the store</h2></a>
+<p>Now you can begin to interact with the store using <code>get</code> and <code>set</code>.</p>
+<pre><code class="language-ocaml">let info message = Irmin_unix.info ~author:&quot;Example&quot; &quot;%s&quot; message
+
+let main =
+    Mem_store.Repo.v config &gt;&gt;= Mem_store.master &gt;&gt;= fun t -&gt;
+    (* Set a/b/c to &quot;Hello, Irmin!&quot; *)
+    Mem_store.set_exn t [&quot;a&quot;; &quot;b&quot;; &quot;c&quot;] &quot;Hello, Irmin!&quot; ~info:(info &quot;my first commit&quot;) &gt;&gt;= fun () -&gt;
+    (* Get a/b/c *)
+    Mem_store.get t [&quot;a&quot;; &quot;b&quot;; &quot;c&quot;] &gt;|= fun s -&gt;
+    assert (s = &quot;Hello, Irmin!&quot;)
+let () = Lwt_main.run main
+</code></pre>
+<a class="header" href="#transactions" id="transactions"><h2>Transactions</h2></a>
+<p><a href="https://mirage.github.io/irmin/irmin/Irmin/module-type-S_MAKER/index.html#type-transaction">Transactions</a> allow you to make many modifications using an in-memory tree then apply them all at once. This is done using <a href="https://mirage.github.io/irmin/irmin/Irmin/module-type-S_MAKER/index.html#val-with_tree">with_tree</a>:</p>
+<pre><code class="language-ocaml">let transaction_example =
+Mem_store.Repo.v config &gt;&gt;= Mem_store.master &gt;&gt;= fun t -&gt;
+let info = Irmin_unix.info &quot;example transaction&quot; in
+Mem_store.with_tree_exn t [] ~info ~strategy:`Set (fun tree -&gt;
+    let tree = match tree with Some t -&gt; t | None -&gt; Mem_store.Tree.empty in
+    Mem_store.Tree.remove tree [&quot;foo&quot;; &quot;bar&quot;] &gt;&gt;= fun tree -&gt;
+    Mem_store.Tree.add tree [&quot;a&quot;; &quot;b&quot;; &quot;c&quot;] &quot;123&quot; &gt;&gt;= fun tree -&gt;
+    Mem_store.Tree.add tree [&quot;d&quot;; &quot;e&quot;; &quot;f&quot;] &quot;456&quot; &gt;&gt;= Lwt.return_some)
+let () = Lwt_main.run transaction_example
+</code></pre>
+<p>A tree can be modified using the functions in <a href="https://mirage.github.io/irmin/irmin/Irmin/module-type-S/Tree/index.html">Irmin.S.Tree</a>, and when it is returned by the <code>with_tree</code> callback, it will be applied using the transaction's strategy (<code>`Set</code> in the code above)  at the given key (<code>[]</code> in the code above).</p>
+<p>Here is an example <code>move</code> function to move files from one path to another:</p>
+<pre><code class="language-ocaml">let move t ~src ~dest =
+    Mem_store.with_tree_exn t Mem_store.Key.empty ~strategy:`Set (fun tree -&gt;
+        match tree with
+        | Some tr -&gt;
+            Mem_store.Tree.get_tree tr src &gt;&gt;= fun v -&gt;
+            Mem_store.Tree.remove tr src &gt;&gt;= fun _ -&gt;
+            Mem_store.Tree.add_tree tr dest v &gt;&gt;= Lwt.return_some
+        | None -&gt; Lwt.return_none
+    )
+let main =
+    Mem_store.Repo.v config &gt;&gt;= Mem_store.master &gt;&gt;= fun t -&gt;
+    let info = Irmin_unix.info &quot;move a -&gt; foo&quot; in
+    move t ~src:[&quot;a&quot;] ~dest:[&quot;foo&quot;] ~info
+let () = Lwt_main.run main
+</code></pre>
+<a class="header" href="#sync" id="sync"><h2>Sync</h2></a>
+<p><a href="https://docs.mirage.io/irmin/Irmin/Sync/index.html">Irmin.Sync</a> implements the functions needed to interact with remote stores.</p>
+<ul>
+<li><a href="https://docs.mirage.io/irmin/Irmin/Sync/index.html#val-fetch">fetch</a> populates a local store with objects from a remote store</li>
+<li><a href="https://docs.mirage.io/irmin/Irmin/Sync/index.html#val-pull">pull</a> updates a local store with objects from a remote store</li>
+<li><a href="https://docs.mirage.io/irmin/Irmin/Sync/index.html#val-fpush">push</a> updates a remote store with objects from a local store</li>
+</ul>
+<p>Each of these also has an <code>_exn</code> variant which may raise an exception instead of returning <code>result</code> value.</p>
+<p>For example, you can pull a repo and list the files in the root of the project:</p>
+<pre><code class="language-ocaml">open Irmin_unix
+module Git_mem_store = Git.Mem.KV(Irmin.Contents.String)
+module Sync = Irmin.Sync(Git_mem_store)
+let remote = Git_mem_store.remote &quot;git://github.com/mirage/irmin.git&quot;
+let main =
+    Git_mem_store.Repo.v config &gt;&gt;= Git_mem_store.master &gt;&gt;= fun t -&gt;
+    Sync.pull_exn t remote `Set &gt;&gt;= fun () -&gt;
+    Git_mem_store.list t [] &gt;|= List.iter (fun (step, kind) -&gt;
+        match kind with
+        | `Contents -&gt; Printf.printf &quot;FILE %s\n&quot; step
+        | `Node -&gt; Printf.printf &quot;DIR %s\n&quot; step
+    )
+let () = Lwt_main.run main
+</code></pre>
+<a class="header" href="#json-contents" id="json-contents"><h2>JSON Contents</h2></a>
+<p>Most examples in this tutorial use string contents, so I will provide some further information about using JSON values.</p>
+<p>There are two types of JSON contents: <a href="https://mirage.github.io/irmin/irmin/Irmin/Contents/index.html#module-Json_value">Json_value</a> and <a href="https://mirage.github.io/irmin/irmin/Irmin/Contents/index.html#module-Json">Json</a>, where <code>Json</code> can only store JSON objects and <code>Json_value</code> works with any JSON value.</p>
+<p>Setting up the store is exactly the same as when working with strings:</p>
+<pre><code class="language-ocaml">module Mem_store_json = Irmin_mem.KV(Irmin.Contents.Json)
+module Mem_store_json_value = Irmin_mem.KV(Irmin.Contents.Json_value)
+</code></pre>
+<p>For example, using <code>Men_store_json_value</code> we can assign <code>{&quot;x&quot;: 1, &quot;y&quot;: 2, &quot;z&quot;: 3}</code> to the key <code>a/b/c</code>:</p>
+<pre><code class="language-ocaml">let main =
+    let module Store = Mem_store_json_value in
+    Store.Repo.v config &gt;&gt;= Store.master &gt;&gt;= fun t -&gt;
+    let value = `O [&quot;x&quot;, `Float 1.; &quot;y&quot;, `Float 2.; &quot;z&quot;, `Float 3.] in
+    Store.set_exn t [&quot;a&quot;; &quot;b&quot;; &quot;c&quot;] value ~info:(info &quot;set a/b/c&quot;) &gt;&gt;= fun () -&gt;
+    Store.get t [&quot;a&quot;; &quot;b&quot;; &quot;c&quot;] &gt;|= fun x -&gt;
+    assert (Irmin.Type.equal Store.contents_t value x)
+let () = Lwt_main.run main
+</code></pre>
+<p>An interesting thing about <code>Json_value</code> stores is the ability to use <a href="https://mirage.github.io/irmin/irmin/Irmin/index.html#module-Json_tree">Json_tree</a> to recursively project values onto a key. This means that using <code>Json_tree.set</code>, to assign <code>{&quot;test&quot;: {&quot;foo&quot;: &quot;bar&quot;}, &quot;x&quot;: 1, &quot;y&quot;: 2, &quot;z&quot;: 3}</code> to the key <code>a/b/c</code> will set <code>a/b/c/x</code> to <code>1</code>, <code>a/b/c/y</code> to <code>2</code>, <code>a/b/c/z</code> to <code>3</code> and <code>a/b/c/test/foo</code> to <code>&quot;bar&quot;</code>.</p>
+<p>This allows for large JSON objects to be modified in pieces without having the encode/decode the entire thing to access specific fields. Using <code>Json_tree.get</code> we can also retrieve a tree as a JSON value. So if we call <code>Json_tree.get</code> with the key <code>a/b</code> we will get the following object back: <code>{&quot;c&quot;: {&quot;test&quot;: {&quot;foo&quot;: &quot;bar&quot;}, &quot;x&quot;: 1, &quot;y&quot;: 2, &quot;z&quot;: 3}}</code>.</p>
+<pre><code class="language-ocaml">let main =
+    let module Store = Mem_store_json_value in
+    let module Proj = Irmin.Json_tree(Store) in
+    Store.Repo.v config &gt;&gt;= Store.master &gt;&gt;= fun t -&gt;
+    let value = `O [&quot;test&quot;, `O [&quot;foo&quot;, `String &quot;bar&quot;]; &quot;x&quot;, `Float 1.; &quot;y&quot;, `Float 2.; &quot;z&quot;, `Float 3.] in
+    Proj.set t [&quot;a&quot;; &quot;b&quot;; &quot;c&quot;] value ~info:(info &quot;set a/b/c&quot;) &gt;&gt;= fun () -&gt;
+    Store.get t [&quot;a&quot;; &quot;b&quot;; &quot;c&quot;; &quot;x&quot;] &gt;&gt;= fun x -&gt;
+    assert (Irmin.Type.equal Store.contents_t (`Float 1.) x);
+    Store.get t [&quot;a&quot;; &quot;b&quot;; &quot;c&quot;; &quot;test&quot;; &quot;foo&quot;] &gt;&gt;= fun x -&gt;
+    assert (Irmin.Type.equal Store.contents_t (`String &quot;bar&quot;) x);
+    Proj.get t [&quot;a&quot;; &quot;b&quot;] &gt;|= fun x -&gt;
+    assert (Irmin.Type.equal Store.contents_t (`O [&quot;c&quot;, value]) x)
+let () = Lwt_main.run main
+</code></pre>
+<a class="header" href="#custom-content-types" id="custom-content-types"><h1>Custom content types</h1></a>
+<p>At some point working with <code>Irmin</code> you will probably want to move beyond using the default content types.</p>
+<p>This section will explain how custom datatypes can be implemented using <a href="https://mirage.github.io/irmin/irmin/Irmin/Type/index.html">Irmin.Type</a>. Before continuing with these examples make sure to read through the <a href="https://docs.mirage.io/irmin/Irmin/Type/index.html">official documentation</a>, which has information about the predefined types and how they're used.</p>
+<p>Now that you've read through the documentation, let's create some contents by defining the functions required by the <a href="https://docs.mirage.io/irmin/Irmin/Contents/module-type-S/index.html">Irmin.Contents.S</a> interface. This section will walk you through a few different examples:</p>
+<ul>
+<li><a href="#counter">Counter</a></li>
+<li><a href="#record">Record</a></li>
+<li><a href="#association-list">Association list</a></li>
+<li><a href="#lww-register">LWW register</a></li>
+</ul>
+<a class="header" href="#overview" id="overview"><h2>Overview</h2></a>
+<p>To create a content type you need to define the following:</p>
+<ul>
+<li>A type <code>t</code></li>
+<li>A value <code>t</code> of type <code>Irmin.Type.t</code></li>
+<li>A function <code>pp</code> for formatting <code>t</code></li>
+<li>A function <code>of_string</code> for converting from <code>string</code> to <code>t</code></li>
+<li>A function <code>merge</code>, which performs a three-way merge</li>
+</ul>
+<a class="header" href="#counter" id="counter"><h2>Counter</h2></a>
+<p>A counter is just a simple <code>int64</code> value that can be incremented and decremented, when counters are merged the values will be added together.</p>
+<p>To get started, you will need to define a type <code>t</code> and build a value <code>t</code> using the functions provided in <a href="https://docs.mirage.io/irmin/Irmin/Type/index.html">Irmin.Type</a>. In this case all we need is the existing <code>int64</code> value, but in most cases it won't be this simple!</p>
+<pre><code class="language-ocaml">module Counter: Irmin.Contents.S with type t = int64 = struct
+    type t = int64
+    let t = Irmin.Type.int64
+</code></pre>
+<p>Next we will need to define some functions for converting to and from strings.</p>
+<pre><code class="language-ocaml">    let pp fmt = Format.fprintf fmt &quot;%Ld&quot;
+</code></pre>
+<p><code>pp</code> defines a pretty-printer for our type.</p>
+<pre><code class="language-ocaml">    let of_string s =
+        match Int64.of_string_opt s with
+        | Some i -&gt; Ok i
+        | None -&gt; Error (`Msg &quot;invalid counter value&quot;)
+</code></pre>
+<p>And <code>of_string</code> is used to convert a formatted string back to our original type. It returns <code>(t, [`Msg of string]) result</code>, which allows for an error message to be passed back to the user if the value is invalid.</p>
+<p>Finally, we need to define a merge function.  There is already a <code>counter</code> implementation available in <a href="https://docs.mirage.io/irmin/Irmin/Merge/index.html">Irmin.Merge</a>, so you wouldn't actually need to write this yourself:</p>
+<pre><code class="language-ocaml">    let merge ~old a b =
+        let open Irmin.Merge.Infix in
+        old () &gt;|=* fun old -&gt;
+        let old = match old with None -&gt; 0L | Some o -&gt; o in
+        let (+) = Int64.add and (-) = Int64.sub in
+        a + b - old
+</code></pre>
+<pre><code class="language-ocaml">    let merge = Irmin.Merge.(option (v t merge))
+end
+</code></pre>
+<p>If we were to leverage the existing implementation it would be even simpler:</p>
+<pre><code class="language-ocaml">let merge = Irmin.Merge.(option counter)
+</code></pre>
+<p>Now this <code>Counter</code> module can be used as the contents of an Irmin store:</p>
+<pre><code class="language-ocaml">module Counter_mem_store = Irmin_mem.KV(Counter)
+</code></pre>
+<a class="header" href="#record" id="record"><h2>Record</h2></a>
+<p>In this example I will wrap a record type so it can be stored directly in Irmin.</p>
+<p>Here is a <code>car</code> type that we will use as content type for our store:</p>
+<pre><code class="language-ocaml">type color =
+    | Black
+    | White
+    | Other of string
+type car = {
+    license: string;
+    year: int32;
+    make_and_model: string * string;
+    color: color;
+    owner: string;
+}
+</code></pre>
+<p>First color has to be wrapped, variants are modeled using the <a href="https://mirage.github.io/irmin/irmin/Irmin/Type/index.html#val-variant">variant</a> function:</p>
+<pre><code class="language-ocaml">module Car = struct
+    type t  = car
+    let color =
+        let open Irmin.Type in
+        variant &quot;color&quot; (fun black white other -&gt; function
+            | Black -&gt; black
+            | White -&gt; white
+            | Other color -&gt; other color)
+        |~ case0 &quot;Black&quot; Black
+        |~ case0 &quot;White&quot; White
+        |~ case1 &quot;Other&quot; string (fun s -&gt; Other s)
+        |&gt; sealv
+</code></pre>
+<p>This is mapping variant cases to their names in string representation. Records are handled similarly:</p>
+<pre><code class="language-ocaml">    let t =
+        let open Irmin.Type in
+        record &quot;car&quot; (fun license year make_and_model color owner -&gt;
+            {license; year; make_and_model; color; owner})
+        |+ field &quot;license&quot; string (fun t -&gt; t.license)
+        |+ field &quot;year&quot; int32 (fun t -&gt; t.year)
+        |+ field &quot;make_and_model&quot; (pair string string) (fun t -&gt; t.make_and_model)
+        |+ field &quot;color&quot; color (fun t -&gt; t.color)
+        |+ field &quot;owner&quot; string (fun t -&gt; t.owner)
+        |&gt; sealr
+</code></pre>
+<p>Finally, we can use the builtin JSON encoding and merge function:</p>
+<pre><code class="language-ocaml">    let pp = Irmin.Type.pp_json t
+</code></pre>
+<p>This example uses <a href="https://mirage.github.io/irmin/irmin/Irmin/Type/index.html#val-pp_json">Irmin.Type.pp_json</a> and <a href="https://mirage.github.io/irmin/irmin/Irmin/Type/index.html#val-decode_json">Irmin.Type.decode_json</a> , the predefined JSON pretty-printer and parser, rather than writing our own. As types get more and more complex it is very nice to be able to use the JSON formatter to avoid having to write ad-hoc functions for encoding and decoding values.</p>
+<pre><code class="language-ocaml">    let of_string s =
+        let decoder = Jsonm.decoder (`String s) in
+        Irmin.Type.decode_json t decoder
+</code></pre>
+<p>And the merge operation:</p>
+<pre><code class="language-ocaml">    let merge = Irmin.Merge.(option (idempotent t))
+end
+</code></pre>
+<p>Now some examples using <code>Car</code> -- we will map Vehicle Identification Number to a car record, this could be used by a tow company or an auto shop to identify cars:</p>
+<pre><code class="language-ocaml">open Lwt.Infix
+module Car_store = Irmin_mem.KV(Car)
+
+let car_a = {
+    color = Other &quot;green&quot;;
+    license = &quot;ABCD123&quot;;
+    year = 2002l;
+    make_and_model = (&quot;Honda&quot;, &quot;Accord&quot;);
+    owner = &quot;Jane Doe&quot;;
+}
+
+let car_b = {
+    color = Black;
+    license = &quot;MYCAR00&quot;;
+    year = 2016l;
+    make_and_model = (&quot;Toyota&quot;, &quot;Corolla&quot;);
+    owner = &quot;Mike Jones&quot;;
+}
+
+let add_car store car_number car =
+    let info = Irmin_unix.info &quot;added %s&quot; car_number in
+    Car_store.set_exn store [car_number] car ~info
+
+let main =
+    let config = Irmin_mem.config () in
+    Car_store.Repo.v config &gt;&gt;= Car_store.master &gt;&gt;= fun t -&gt;
+    add_car t &quot;5Y2SR67049Z456146&quot; car_a &gt;&gt;= fun () -&gt;
+    add_car t &quot;2FAFP71W65X110910&quot; car_b &gt;&gt;= fun () -&gt;
+    Car_store.get t [&quot;2FAFP71W65X110910&quot;] &gt;|= fun car -&gt;
+    assert (car.license = car_b.license);
+    assert (car.year = car_b.year)
+
+let () = Lwt_main.run main
+</code></pre>
+<a class="header" href="#association-list" id="association-list"><h2>Association list</h2></a>
+<p>In this example we will define an association list that maps string keys to string values. The type itself is not very complicated, but the merge function is even more complex than the previous two examples.</p>
+<p>Like the two examples above, you need to define a <code>t</code> type and a <code>t</code> value of type <code>Irmin.Type.t</code> to begin:</p>
+<pre><code class="language-ocaml">module Object = struct
+    type t = (string * string) list
+    let t = Irmin.Type.(list (pair string string))
+</code></pre>
+<p>So far so good, Irmin provides a simple way to model a list of pairs! Now we can use the JSON encoder again, just like in the previous example.</p>
+<p>Define <code>pp</code>:</p>
+<pre><code class="language-ocaml">    let pp = Irmin.Type.pp_json t
+</code></pre>
+<p>And <code>of_string</code>:</p>
+<pre><code class="language-ocaml">    let of_string s =
+        let decoder = Jsonm.decoder (`String s) in
+        Irmin.Type.decode_json t decoder
+</code></pre>
+<p>To write the merge function we can leverage <code>Irmin.Merge.alist</code>, which simplifies this process for association lists. In this example we are using strings for both the keys and values, however in most other cases <code>alist</code> can get a bit more complicated since it requires existing merge functions for both the key and value types. For a slightly more complicated example you can read through <code>merge_object</code> and <code>merge_value</code> in <a href="https://github.com/mirage/irmin/blob/master/src/irmin/contents.ml">contents.ml</a>, which are used to implement JSON contents for Irmin.</p>
+<pre><code class="language-ocaml">    let merge_alist =
+        Irmin.Merge.(alist Irmin.Type.string Irmin.Type.string (fun _key -&gt; option string))
+    let merge = Irmin.Merge.(option merge_alist)
+end
+</code></pre>
+<a class="header" href="#lww-register" id="lww-register"><h2>LWW register</h2></a>
+<p>A last-write-wins register is similar to a basic Irmin store, except on merge the most recently written value will be picked rather than trying to merge the values.</p>
+<p>First, this requires a way to get a timestamp - we will make this as generic as possible so it can be used on unix or MirageOS:</p>
+<pre><code class="language-ocaml">module type TIMESTAMP = sig
+    val now: unit -&gt; int64
+end
+</code></pre>
+<p>On unix this can be implemented <code>Unix.gettimeofday</code>:</p>
+<pre><code class="language-ocaml">module Timestamp = struct
+    let now () = Int64.of_float @@ Unix.gettimeofday () *. 100000.
+end
+</code></pre>
+<p><code>Lww_register</code> will be defined a functor that wraps an exsiting content type:</p>
+<pre><code class="language-ocaml">module Lww_register (Time: TIMESTAMP) (C: Irmin.Type.S) = struct
+    type t = C.t * int64
+    let t =
+        Irmin.Type.(pair C.t int64)
+</code></pre>
+<p>A convenience function for adding a timestamp to a <code>C.t</code> value:</p>
+<pre><code class="language-ocaml">    let v c = (c, Time.now ())
+</code></pre>
+<p>The same <code>pp</code> and <code>to_string</code> implementations as the previous examples:</p>
+<pre><code class="language-ocaml">    let pp = Irmin.Type.pp_json t
+    let of_string s =
+        let decoder = Jsonm.decoder (`String s) in
+        Irmin.Type.decode_json t decoder
+</code></pre>
+<p>The merge operation for <code>Lww_register</code> is slightly different than the ones covered so far. It will not attempt to merge any values, instead it will pick the newest value based on the attached timestamp.</p>
+<pre><code class="language-ocaml">    let merge ~old (a, timestamp_a) (b, timestamp_b) =
+        match Int64.compare timestamp_a timestamp_b with
+        | 0 -&gt;
+            if Irmin.Type.equal C.t a b then
+                Irmin.Merge.ok (a, timestamp_a)
+            else
+                let msg = &quot;Conflicting entries have the same timestamp but different values&quot; in
+                Irmin.Merge.conflict &quot;%s&quot; msg
+        | 1 -&gt; Irmin.Merge.ok (a, timestamp_a)
+        | _ -&gt; Irmin.Merge.ok (b, timestamp_b)
+    let merge = Irmin.Merge.(option (v t merge))
+end
+</code></pre>
+<p>An example using <code>Lww_register</code>:</p>
+<pre><code class="language-ocaml">open Lwt.Infix
+module Value = Lww_register(Timestamp)(Irmin.Contents.String)
+module Store = Irmin_mem.KV(Value)
+let main =
+    (* Configure the repo *)
+    let cfg = Irmin_mem.config () in
+    (* Access the master branch *)
+    Store.Repo.v cfg &gt;&gt;= Store.master &gt;&gt;= fun master -&gt;
+    (* Set [foo] to [&quot;bar&quot;] on master branch *)
+    Store.set_exn master [&quot;foo&quot;] (Value.v &quot;bar&quot;) ~info:(Irmin_unix.info &quot;set foo on master branch&quot;) &gt;&gt;= fun () -&gt;
+    (* Access example branch *)
+    Store.Repo.v cfg &gt;&gt;= fun repo -&gt; Store.of_branch repo &quot;example&quot; &gt;&gt;= fun example -&gt;
+    (* Set [foo] to [&quot;baz&quot;] on example branch *)
+    Store.set_exn example [&quot;foo&quot;] (Value.v &quot;baz&quot;) ~info:(Irmin_unix.info &quot;set foo on example branch&quot;) &gt;&gt;= fun () -&gt;
+    (* Merge the example into master branch *)
+    Store.merge_into ~into:master example ~info:(Irmin_unix.info &quot;merge example into master&quot;) &gt;&gt;= function
+    | Ok () -&gt;
+        (* Check that [foo] is set to [&quot;baz&quot;] after the merge *)
+        Store.get master [&quot;foo&quot;] &gt;|= fun (foo, _) -&gt;
+        assert (foo = &quot;baz&quot;)
+    | Error conflict -&gt;
+        let fmt = Irmin.Type.pp_json Irmin.Merge.conflict_t in
+        Lwt_io.printl (Fmt.to_to_string fmt conflict)
+let () = Lwt_main.run main
+</code></pre>
+<p>If you'd like another example then check out the <a href="https://github.com/mirage/irmin/blob/master/examples/custom_merge.ml">custom merge</a> example in the Irmin repository, which illustrates how to write a mergeable log.</p>
+<a class="header" href="#writing-a-storage-backend" id="writing-a-storage-backend"><h1>Writing a storage backend</h1></a>
+<p>This section illustrates how to write a custom storage backend for Irmin using a simplified implementation of <a href="https://github.com/zshipko/irmin-redis">irmin-redis</a> as an example. <code>irmin-redis</code> uses a Redis server to store Irmin data.</p>
+<p>Unlike writing a <a href="Contents.html">custom datatype</a>, there is not a tidy way of doing this. Each backend must fulfill certain criteria as defined by <a href="https://mirage.github.io/irmin/irmin/Irmin/module-type-CONTENT_ADDRESSABLE_STORE_MAKER/index.html">Irmin.CONTENT_ADDRESSABLE_STORE_MAKER</a>, <a href="https://mirage.github.io/irmin/irmin/Irmin/module-type-ATOMIC_WRITE_STORE_MAKER/index.html">Irmin.ATOMIC_WRITE_STORE_MAKER</a>, <a href="https://mirage.github.io/irmin/irmin/Irmin/module-type-S_MAKER/index.html">Irmin.S_MAKER</a>, and <a href="https://mirage.github.io/irmin/irmin/Irmin/module-type-KV_MAKER/index.html">Irmin.KV_MAKER</a>. These module types define interfaces for functors that create stores. For example, a <code>KV_MAKER</code> defines a module that takes an <code>Irmin.Contents.S</code> as a parameter and returns a module of type <code>Irmin.KV</code>.</p>
+<a class="header" href="#redis-client" id="redis-client"><h2>Redis client</h2></a>
+<p>This examples uses the <a href="https://github.com/zshipko/ocaml-hiredis">hiredis</a> package to create connections, send and receive data from Redis servers. It is available on <a href="https://github.com/ocaml/opam">opam</a> under the same name.</p>
+<a class="header" href="#the-readonly-store" id="the-readonly-store"><h2>The readonly store</h2></a>
+<p>The process for writing a backend for Irmin requires implementing a few functors - the accomplish this, we can start of by writing a helper module that provides an generic implementation that can be re-used by the content-adressable store and the atomic-write store:</p>
+<ul>
+<li><code>t</code>: The store type</li>
+<li><code>key</code>: The key type</li>
+<li><code>value</code>: The value/content type</li>
+</ul>
+<pre><code class="language-ocaml">open Lwt.Infix
+open Hiredis
+</code></pre>
+<pre><code class="language-ocaml">module Helper (K: Irmin.Type.S) (V: Irmin.Type.S) = struct
+  type 'a t = (string * Client.t) (* Store type: Redis prefix and client *)
+  type key = K.t               (* Key type *)
+  type value = V.t             (* Value type *)
+</code></pre>
+<p>Additionally, it requires a few functions:</p>
+<ul>
+<li><code>v</code>: used to create a value of type <code>t</code></li>
+<li><code>mem</code>: checks whether or not a key exists</li>
+<li><code>find</code>: returns the value associated with a key (if it exists)</li>
+</ul>
+<p>Since an Irmin database requires a few levels of store types (links, objects, etc...) a prefix is needed to identify the store type in Redis or else several functions will return incorrect results. This is not an issue with the in-memory backend, since it is easy to just create an independent store for each type, however in this case, there will be several diffent store types on a single Redis instance.</p>
+<pre><code class="language-ocaml">  let v prefix config =
+    let module C = Irmin.Private.Conf in
+    let root = match C.get config C.root with
+      | Some root -&gt; root ^ &quot;:&quot; ^ prefix ^ &quot;:&quot;
+      | None -&gt; prefix ^ &quot;:&quot;
+    in
+    Lwt.return (root, Client.connect ~port:6379 &quot;127.0.0.1&quot;)
+</code></pre>
+<p><code>mem</code> is implemented using the <code>EXISTS</code> command, which checks for the exitence of a key in Redis:</p>
+<pre><code class="language-ocaml">  let mem (prefix, client) key =
+      let key = Irmin.Type.to_string K.t key in
+      match Client.run client [| &quot;EXISTS&quot;; prefix ^ key |] with
+      | Integer 1L -&gt; Lwt.return_true
+      | _ -&gt; Lwt.return_false
+</code></pre>
+<p><code>find</code> uses the <code>GET</code> command to retreive and key, if one isn't found or can't be decoded correctly then <code>find</code> returns <code>None</code>:</p>
+<pre><code class="language-ocaml">  let find (prefix, client) key =
+      let key = Irmin.Type.to_string K.t key in
+      match Client.run client [| &quot;GET&quot;; prefix ^ key |] with
+      | String s -&gt;
+          (match Irmin.Type.of_string V.t s with
+          | Ok s -&gt; Lwt.return_some s
+          | _ -&gt; Lwt.return_none)
+      | _ -&gt; Lwt.return_none
+end
+</code></pre>
+<a class="header" href="#the-content-adressable-store" id="the-content-adressable-store"><h3>The content-adressable store</h3></a>
+<p>Next is the content-adressable (<a href="https://mirage.github.io/irmin/irmin/Irmin/module-type-CONTENT_ADDRESSABLE_STORE/index.html">CONTENT_ADDRESSABLE_STORE</a>) interface - the majority of the required methods can be inherited from <code>Helper</code>!</p>
+<pre><code class="language-ocaml">module Content_adressable (K: Irmin.Hash.S) (V: Irmin.Type.S) = struct
+  include Helper(K)(V)
+  let v = v &quot;obj&quot;
+</code></pre>
+<p>This module needs an <code>add</code> function, which takes a value, hashes it, stores the association and returns the hash:</p>
+<pre><code class="language-ocaml">  let add (prefix, client) value =
+      let hash = K.digest (Irmin.Type.to_string V.t value) in
+      let key = Irmin.Type.to_string K.t hash in
+      let value = Irmin.Type.to_string V.t value in
+      ignore (Client.run client [| &quot;SET&quot;; prefix ^ key; value |]);
+      Lwt.return hash
+</code></pre>
+<p>Then a <code>batch</code> function, which can be used to group writes together. We will use the most basic implementation:</p>
+<pre><code class="language-ocaml">  let batch (prefix, client) f =
+    let _ = Client.run client [| &quot;MULTI&quot; |] in
+    f (prefix, client) &gt;|= fun result -&gt;
+    let _ = Client.run client [| &quot;EXEC&quot; |] in
+    result
+end
+</code></pre>
+<a class="header" href="#the-atomic-write-store" id="the-atomic-write-store"><h2>The atomic-write store</h2></a>
+<p>The <a href="https://mirage.github.io/irmin/irmin/Irmin/module-type-ATOMIC_WRITE_STORE/index.html">ATOMIC_WRITE_STORE</a> has many more types and values that need to be defined than the previous examples, but luckily this is the last step!</p>
+<p>To start off we can use the <code>Helper</code> functor defined above:</p>
+<pre><code class="language-ocaml">module Atomic_write (K: Irmin.Type.S) (V: Irmin.Type.S) = struct
+  module H = Helper(K)(V)
+</code></pre>
+<p>There are a few types we need to declare next. <code>key</code> and <code>value</code> should match <code>H.key</code> and <code>H.value</code> and <code>watch</code> is used to declare the type of the watcher -- this is used to send notifications when the store has been updated. <a href="https://github.com/mirage/irmin-watcher">irmin-watcher</a> has some more information on watchers.</p>
+<pre><code class="language-ocaml">  module W = Irmin.Private.Watch.Make(K)(V)
+  type t = { t: [`Write] H.t; w: W.t }  (* Store type *)
+  type key = H.key             (* Key type *)
+  type value = H.value         (* Value type *)
+  type watch = W.watch          (* Watch type *)
+</code></pre>
+<p>The <code>watches</code> variable defined below creates a context used to track active watches.</p>
+<pre><code class="language-ocaml">  let watches = W.v ()
+</code></pre>
+<p>Again, we need a <code>v</code> function for creating a value of type <code>t</code>:</p>
+<pre><code class="language-ocaml">  let v config =
+    H.v &quot;data&quot; config &gt;&gt;= fun t -&gt;
+    Lwt.return {t; w = watches }
+</code></pre>
+<p>The next few functions (<code>find</code> and <code>mem</code>) are just wrappers around the implementations in <code>H</code>:</p>
+<pre><code class="language-ocaml">  let find t = H.find t.t
+  let mem t  = H.mem t.t
+</code></pre>
+<p>A few more simple functions: <code>watch_key</code>, <code>watch</code> and <code>unwatch</code>, used to created or destroy watches:</p>
+<pre><code class="language-ocaml">  let watch_key t key = W.watch_key t.w key
+  let watch t = W.watch t.w
+  let unwatch t = W.unwatch t.w
+</code></pre>
+<p>We will need to implement a few more functions:</p>
+<ul>
+<li><code>list</code>, lists files at a specific path.</li>
+<li><code>set</code>, writes a value to the store.</li>
+<li><code>remove</code>, deletes a value from the store.</li>
+<li><code>test_and_set</code>, modifies a key only if the <code>test</code> value matches the current value for the given key.</li>
+</ul>
+<p>The <code>list</code> implementation will get a list of keys from Redis using the <code>KEYS</code> command then convert them from strings to <code>Store.key</code> values:</p>
+<pre><code class="language-ocaml">  let list {t = (prefix, client); _} =
+      match Client.run client [| &quot;KEYS&quot;; prefix ^ &quot;*&quot; |] with
+      | Array arr -&gt;
+          Array.map (fun k -&gt;
+            Irmin.Type.of_string K.t (Value.to_string k)
+          ) arr
+          |&gt; Array.to_list
+          |&gt; Lwt_list.filter_map_s (function
+            | Ok s -&gt; Lwt.return_some s
+            | _ -&gt; Lwt.return_none)
+      | _ -&gt; Lwt.return []
+</code></pre>
+<p><code>set</code> just encodes the keys and values as strings, then uses the Redis <code>SET</code> command to store them:</p>
+<pre><code class="language-ocaml">  let set {t = (prefix, client); w} key value =
+      let key' = Irmin.Type.to_string K.t key in
+      let value' = Irmin.Type.to_string V.t value in
+      match Client.run client [| &quot;SET&quot;; prefix ^ key'; value' |] with
+      | Status &quot;OK&quot; -&gt; W.notify w key (Some value)
+      | _ -&gt; Lwt.return_unit
+</code></pre>
+<p><code>remove</code> uses the Redis <code>DEL</code> command to remove stored values:</p>
+<pre><code class="language-ocaml">  let remove {t = (prefix, client); w} key =
+      let key' = Irmin.Type.to_string K.t key in
+      ignore (Client.run client [| &quot;DEL&quot;; prefix ^ key' |]);
+      W.notify w key None
+</code></pre>
+<p><code>test_and_set</code> will modify a key if the current value is equal to <code>test</code>. This requires an atomic check and set, which can be done using <code>WATCH</code>, <code>MULTI</code> and <code>EXEC</code> in Redis:</p>
+<pre><code class="language-ocaml">  let test_and_set t key ~test ~set:set_value =
+    (* A helper function to execute a command in a Redis transaction *)
+    let txn client args =
+      ignore @@ Client.run client [| &quot;MULTI&quot; |];
+      ignore @@ Client.run client args;
+      Client.run client [| &quot;EXEC&quot; |] &lt;&gt; Nil
+    in
+    let prefix, client = t.t in
+    let key' = Irmin.Type.to_string K.t key in
+    (* Start watching the key in question *)
+    ignore @@ Client.run client [| &quot;WATCH&quot;; prefix ^ key' |];
+    (* Get the existing value *)
+    find t key &gt;&gt;= fun v -&gt;
+    (* Check it against [test] *)
+    if Irmin.Type.(equal (option V.t)) test v then (
+      (match set_value with
+        | None -&gt; (* Remove the key *)
+            if txn client [| &quot;DEL&quot;; prefix ^ key' |] then
+              W.notify t.w key None &gt;&gt;= fun () -&gt;
+              Lwt.return_true
+            else
+              Lwt.return_false
+        | Some value -&gt; (* Update the key *)
+            let value' = Irmin.Type.to_string V.t value in
+            if txn client [| &quot;SET&quot;; prefix ^ key'; value' |] then
+              W.notify t.w key set_value &gt;&gt;= fun () -&gt;
+              Lwt.return_true
+            else
+              Lwt.return_false
+      ) &gt;&gt;= fun ok -&gt;
+      Lwt.return ok
+    ) else (
+      ignore @@ Client.run client [| &quot;UNWATCH&quot;; prefix ^ key' |];
+      Lwt.return_false
+    )
+end
+</code></pre>
+<p>Finally, add <code>Make</code> and <code>KV</code> functors for creating Redis-backed Irmin stores:</p>
+<pre><code class="language-ocaml">module Make: Irmin.S_MAKER = Irmin.Make(Content_adressable)(Atomic_write)
+
+module KV: Irmin.KV_MAKER = functor (C: Irmin.Contents.S) -&gt;
+  Make
+    (Irmin.Metadata.None)
+    (C)
+    (Irmin.Path.String_list)
+    (Irmin.Branch.String)
+    (Irmin.Hash.SHA1)
+</code></pre>
+<a class="header" href="#graphql-bindings" id="graphql-bindings"><h1>GraphQL bindings</h1></a>
+<p><code>irmin-graphql</code> provides a nice interface for accessing remote Irmin stores over a network. This section will show you how to run an <code>irmin-graphql</code> server and query it using <a href="https://github.com/zshipko/irmin-js">irmin-js</a>, or your favorite GraphQL client!</p>
+<a class="header" href="#installation-1" id="installation-1"><h2>Installation</h2></a>
+<p><code>irmin-graphql</code> is part of the latest <code>irmin</code> release, so all that's needed is:</p>
+<pre><code class="language-shell">$ opam install irmin-unix
+</code></pre>
+<a class="header" href="#running-the-server" id="running-the-server"><h2>Running the server</h2></a>
+<p>To start the GraphQL server:</p>
+<pre><code class="language-shell">$ irmin graphql --port 8080
+</code></pre>
+<p>This will start the server on <code>localhost:8080</code> - this can be customized using the <code>--address</code> and <code>--port</code> flags. By default <code>irmin-graphql</code> provides an GraphiQL editor for writing queries from within the brower which can be accessed at <a href="http://localhost:8080/graphql">http://localhost:8080/graphql</a></p>
+<a class="header" href="#available-clients" id="available-clients"><h2>Available clients</h2></a>
+<p>There are several reference client implementations provide many basic queries by default, in addition to simplifying the process of executing handwritten queries.</p>
+<ul>
+<li><a href="https://github.com/zshipko/irmin-js">irmin-js</a></li>
+<li><a href="https://github.com/zshipko/irmin-go">irmin-go</a></li>
+</ul>
+<a class="header" href="#schema" id="schema"><h2>Schema</h2></a>
+<p>Using the GraphiQL web interface you can explore the schema using the <strong>Docs</strong> button in the upper-right corner. Additionally, there are tools like <a href="https://github.com/prisma/get-graphql-schema"><code>get-graphql-schema</code></a> which will dump the entire schema for you.</p>
+<a class="header" href="#queries" id="queries"><h2>Queries</h2></a>
+<p>Using <code>irmin-graphql</code> it is possible to collect information about Irmin databases and (Git repositories) using GraphQL.</p>
+<a class="header" href="#get" id="get"><h3>Get</h3></a>
+<p>To start off we will create a query to retrieve the value stored at the path <code>abc</code>:</p>
+<pre><code class="language-graphql">query {
+    master {
+      tree {
+        get(key: &quot;abc&quot;)
+      }
+    }
+}
+</code></pre>
+<p>Using <code>irmin-js</code> the same query would be written as:</p>
+<pre><code class="language-javascript">let ir = new Irmin(&quot;http://localhost:8080/graphql&quot;);
+ir.master().get(&quot;abc&quot;).then((res) =&gt; {
+    ...
+});
+</code></pre>
+<p><strong>NOTE</strong>: <code>irmin-js</code> can also be used to send execute raw queries:</p>
+<pre><code class="language-javascript">let ir = new Irmin(&quot;http://localhost:8080/graphql&quot;);
+ir.execute({
+    body: &quot;query { master { tree { get(key: &quot;abc&quot;) } } }&quot;,
+    variables: {}
+}).then((res) =&gt; {
+    ...
+});
+</code></pre>
+<p>The following would accomplish the same thing in <code>my-branch</code>:</p>
+<pre><code class="language-graphql">query {
+    branch(name: &quot;my-branch&quot;) {
+      tree {
+          get(key: &quot;a/b/c&quot;)
+      }
+    }
+}
+</code></pre>
+<p>It's also possible to set or update multiple keys using the <code>set_tree</code> and <code>update_tree</code> mutations. The following will set <code>/a</code> to &quot;foo&quot; and <code>/b</code> to &quot;bar&quot;:</p>
+<pre><code class="language-graphql">mutation {
+  set_tree(key: &quot;/&quot;, tree: [{key: &quot;a&quot;, value: &quot;foo&quot;}, {key: &quot;b&quot;, value:&quot;bar&quot;}]){
+    hash
+  }
+}
+</code></pre>
+<p>And updating multiple keys is similar:</p>
+<pre><code class="language-graphql">mutation {
+  update_tree(key: &quot;/&quot;, tree: [{key: &quot;a&quot;, value: &quot;testing&quot;}, {key: &quot;b&quot;, value: null}]){
+    hash
+  }
+}
+</code></pre>
+<p>this will set <code>a</code> to &quot;testing&quot; and remove the value associated with <code>b</code>.</p>
+<a class="header" href="#branch-info" id="branch-info"><h3>Branch info</h3></a>
+<p>Using <code>master</code>/<code>branch</code> queries we are able to find lots of information about the attached Irmin store:</p>
+<pre><code class="language-graphql">query {
+    master {
+        head {
+            hash
+            info
+            parents
+        }
+    }
+}
+</code></pre>
+<a class="header" href="#mutations" id="mutations"><h2>Mutations</h2></a>
+<p><code>irmin-graphql</code> also supports mutations, which are basically queries with side-effects.</p>
+<a class="header" href="#set" id="set"><h3>Set</h3></a>
+<p>For example, setting a key is easy:</p>
+<pre><code class="language-graphql">mutation {
+    set(key: &quot;a/b/c&quot;, value: &quot;123&quot;) {
+        hash
+    }
+}
+</code></pre>
+<p>The example above sets the key &quot;a/b/c&quot; (<code>[&quot;a&quot;; &quot;b&quot;; &quot;c&quot;]</code> in OCaml) to &quot;123&quot; and returns the new commit's hash.</p>
+<a class="header" href="#sync-1" id="sync-1"><h3>Sync</h3></a>
+<p><code>clone</code>, <code>push</code> and <code>pull</code> are also supported as long as they're supported by the underlying store! This allows data to be synchronized accross servers using a simple mutation:</p>
+<pre><code class="language-graphql">mutation {
+    pull(remote: &quot;git://github.com/mirage/irmin&quot;) {
+        hash
+    }
+}
+</code></pre>
+<a class="header" href="#graphql-servers-in-ocaml" id="graphql-servers-in-ocaml"><h2>GraphQL servers in OCaml</h2></a>
+<p>It is also possible to use the <code>irmin-graphql</code> OCaml interface to embed a GraphQL server in any application!</p>
+<p>Using <code>Irmin_unix.Graphql.Server.Make</code> you can convert an existing <code>Irmin.S</code> typed module into a GraphQL server:</p>
+<pre><code class="language-ocaml">module Graphql_store = Irmin_unix.Git.Mem.KV(Irmin.Contents.String)
+module Graphql = Irmin_unix.Graphql.Server.Make(Graphql_store)(struct let remote = Some Graphql_store.remote end)
+</code></pre>
+<p>The following code will initialize and run the server:</p>
+<pre><code class="language-ocaml">let run_server () =
+  (* Set up the Irmin store *)
+  Graphql_store.Repo.v (Irmin_git.config &quot;/tmp/irmin&quot;) &gt;&gt;= fun repo -&gt;
+
+  (* Initialize the GraphQL server *)
+  let server = Graphql.v repo in
+
+  (* Run the server *)
+  let on_exn exn =
+    Logs.debug (fun l -&gt; l &quot;on_exn: %s&quot; (Printexc.to_string exn))
+  in
+  Cohttp_lwt_unix.Server.create ~on_exn ~mode:(`TCP (`Port 1234)) server
+</code></pre>
+<a class="header" href="#customization" id="customization"><h3>Customization</h3></a>
+<p>It is possible to use a custom JSON representation for <code>contents</code> and <code>metadata</code>
+values by implementing <code>Irmin_graphql.Server.PRESENTER</code>:</p>
+<pre><code class="language-ocaml">module Example_type = struct
+  type t = {x: string; y: string; z: string}
+  let t =
+    let open Irmin.Type in
+    record &quot;Example_type&quot; (fun x y z -&gt; {x; y; z})
+    |+ field &quot;x&quot; string (fun t -&gt; t.x)
+    |+ field &quot;y&quot; string (fun t -&gt; t.y)
+    |+ field &quot;z&quot; string (fun t -&gt; t.z)
+    |&gt; sealr
+  let merge = Irmin.Merge.(option (default t))
+end
+
+module Example_presenter = struct
+  type t = Example_type.t
+  type src = Example_type.t
+  let to_src t = t
+  let schema_typ =
+    let open Example_type in
+    Irmin_graphql.Server.Schema.(obj &quot;Example&quot;
+      ~fields:(fun _ -&gt; [
+        field &quot;x&quot;
+          ~typ:(non_null string)
+          ~args:[]
+          ~resolve:(fun _ t -&gt; t.x)
+        ;
+        field &quot;y&quot;
+          ~typ:(non_null string)
+          ~args:[]
+          ~resolve:(fun _ t -&gt; t.y)
+        ;
+        field &quot;z&quot;
+          ~typ:(non_null string)
+          ~args:[]
+          ~resolve:(fun _ t -&gt; t.z)
+        ;
+      ])
+    )
+end
+</code></pre>
+<p>(You may also opt to use <code>Irmin_graphql.Server.Default_presenter</code>, which can be used on any <code>Irmin.Type.S</code>)</p>
+<p>Once you've done this for both the <code>contents</code> and <code>metadata</code> types you need to wrap them in <code>Irmin_graphql.Server.PRESENTATION</code> before passing them to <code>Irmin_graphql.Server.Make_ext</code>:</p>
+<pre><code class="language-ocaml">module Example_store = Irmin_mem.KV(Example_type)
+
+module Presentation = struct
+  module Contents = Example_presenter
+  module Metadata = Irmin_graphql.Server.Default_presenter(Example_store.Metadata)
+end
+
+module Config = struct
+  let remote = None
+  let info = Irmin_unix.info
+end
+
+module Graphql_ext =
+  Irmin_graphql.Server.Make_ext
+    (Cohttp_lwt_unix.Server)
+    (Config)
+    (Example_store)
+    (Presentation)
+</code></pre>
+<a class="header" href="#resources" id="resources"><h1>Resources</h1></a>
+<a class="header" href="#documentation" id="documentation"><h2>Documentation</h2></a>
+<ul>
+<li><a href="https://mirage.github.io/irmin/">Official documentation</a></li>
+<li><a href="https://mirage.io/blog/irmin-1.0">Easy distributed analytics with Irmin 1.0</a></li>
+</ul>
+<a class="header" href="#related-projects" id="related-projects"><h2>Related projects</h2></a>
+<a class="header" href="#servers" id="servers"><h3>Servers</h3></a>
+<ul>
+<li><a href="https://github.com/mirage/irmin">irmin-graphql</a> - A GraphQL server</li>
+<li><a href="https://github.com/zshipko/irmin-rpc">irmin-rpc</a> - A capnproto-rpc client/server</li>
+<li><a href="https://github.com/mirage/irmin">irmin-http</a> - A simple HTTP server that comes with <code>irmin-unix</code></li>
+<li><a href="https://github.com/zshipko/irmin-web">irmin-web</a> - A HTTP server with built-in Javascript bindings for communicating with <code>irmin-graphql</code></li>
+</ul>
+<a class="header" href="#backends" id="backends"><h3>Backends</h3></a>
+<ul>
+<li><a href="https://github.com/g2p/wodan">wodan</a> - A filesystem library for MirageOS</li>
+</ul>
+<a class="header" href="#language-bindings" id="language-bindings"><h3>Language bindings</h3></a>
+<ul>
+<li><a href="https://github.com/zshipko/irmin-js">irmin-js</a> - Javascript bindings to <code>irmin-graphql</code></li>
+<li><a href="https://github.com/zshipko/irmin-go">irmin-go</a> - Go bindings to <code>irmin-graphql</code></li>
+</ul>
+<a class="header" href="#users-of-irmin" id="users-of-irmin"><h2>Users of Irmin</h2></a>
+<ul>
+<li><a href="https://tezos.com">tezos</a></li>
+<li><a href="https://github.com/moby/datakit">datakit</a></li>
+<li><a href="https://github.com/roburio/udns">µDNS</a></li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+        
+        <script type="text/javascript">
+        window.addEventListener('load', function() {
+            window.setTimeout(window.print, 100);
+        });
+        </script>
+        
+        
+
+    </body>
+</html>

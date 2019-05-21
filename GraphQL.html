@@ -1,0 +1,383 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>GraphQL bindings - Irmin Tutorial</title>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:500" rel="stylesheet" type="text/css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        
+
+        
+    </head>
+    <body class="light">
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">var path_to_root = "";</script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { } 
+            if (theme === null || theme === undefined) { theme = 'light'; }
+            document.body.className = theme;
+            document.querySelector('html').className = theme + ' js';
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <ol class="chapter"><li><a href="Introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li><a href="UsingTheCommandLine.html"><strong aria-hidden="true">2.</strong> Using the command-line</a></li><li><a href="GettingStartedOCaml.html"><strong aria-hidden="true">3.</strong> Getting started with OCaml</a></li><li><a href="Contents.html"><strong aria-hidden="true">4.</strong> Custom content types</a></li><li><a href="Backend.html"><strong aria-hidden="true">5.</strong> Writing a storage backend</a></li><li><a href="GraphQL.html" class="active"><strong aria-hidden="true">6.</strong> GraphQL bindings</a></li><li><a href="Resources.html"><strong aria-hidden="true">7.</strong> Resources</a></li></ol>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                
+                <div id="menu-bar" class="menu-bar">
+                    <div id="menu-bar-sticky-container">
+                        <div class="left-buttons">
+                            <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                                <i class="fa fa-paint-brush"></i>
+                            </button>
+                            <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                                <li role="none"><button role="menuitem" class="theme" id="light">Light <span class="default">(default)</span></button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                                <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            </ul>
+                            
+                            <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                                <i class="fa fa-search"></i>
+                            </button>
+                            
+                        </div>
+
+                        <h1 class="menu-title">Irmin Tutorial</h1> 
+
+                        <div class="right-buttons">
+                            <a href="print.html" title="Print this book" aria-label="Print this book">
+                                <i id="print-button" class="fa fa-print"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" name="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <a class="header" href="#graphql-bindings" id="graphql-bindings"><h1>GraphQL bindings</h1></a>
+<p><code>irmin-graphql</code> provides a nice interface for accessing remote Irmin stores over a network. This section will show you how to run an <code>irmin-graphql</code> server and query it using <a href="https://github.com/zshipko/irmin-js">irmin-js</a>, or your favorite GraphQL client!</p>
+<a class="header" href="#installation" id="installation"><h2>Installation</h2></a>
+<p><code>irmin-graphql</code> is part of the latest <code>irmin</code> release, so all that's needed is:</p>
+<pre><code class="language-shell">$ opam install irmin-unix
+</code></pre>
+<a class="header" href="#running-the-server" id="running-the-server"><h2>Running the server</h2></a>
+<p>To start the GraphQL server:</p>
+<pre><code class="language-shell">$ irmin graphql --port 8080
+</code></pre>
+<p>This will start the server on <code>localhost:8080</code> - this can be customized using the <code>--address</code> and <code>--port</code> flags. By default <code>irmin-graphql</code> provides an GraphiQL editor for writing queries from within the brower which can be accessed at <a href="http://localhost:8080/graphql">http://localhost:8080/graphql</a></p>
+<a class="header" href="#available-clients" id="available-clients"><h2>Available clients</h2></a>
+<p>There are several reference client implementations provide many basic queries by default, in addition to simplifying the process of executing handwritten queries.</p>
+<ul>
+<li><a href="https://github.com/zshipko/irmin-js">irmin-js</a></li>
+<li><a href="https://github.com/zshipko/irmin-go">irmin-go</a></li>
+</ul>
+<a class="header" href="#schema" id="schema"><h2>Schema</h2></a>
+<p>Using the GraphiQL web interface you can explore the schema using the <strong>Docs</strong> button in the upper-right corner. Additionally, there are tools like <a href="https://github.com/prisma/get-graphql-schema"><code>get-graphql-schema</code></a> which will dump the entire schema for you.</p>
+<a class="header" href="#queries" id="queries"><h2>Queries</h2></a>
+<p>Using <code>irmin-graphql</code> it is possible to collect information about Irmin databases and (Git repositories) using GraphQL.</p>
+<a class="header" href="#get" id="get"><h3>Get</h3></a>
+<p>To start off we will create a query to retrieve the value stored at the path <code>abc</code>:</p>
+<pre><code class="language-graphql">query {
+    master {
+      tree {
+        get(key: &quot;abc&quot;)
+      }
+    }
+}
+</code></pre>
+<p>Using <code>irmin-js</code> the same query would be written as:</p>
+<pre><code class="language-javascript">let ir = new Irmin(&quot;http://localhost:8080/graphql&quot;);
+ir.master().get(&quot;abc&quot;).then((res) =&gt; {
+    ...
+});
+</code></pre>
+<p><strong>NOTE</strong>: <code>irmin-js</code> can also be used to send execute raw queries:</p>
+<pre><code class="language-javascript">let ir = new Irmin(&quot;http://localhost:8080/graphql&quot;);
+ir.execute({
+    body: &quot;query { master { tree { get(key: &quot;abc&quot;) } } }&quot;,
+    variables: {}
+}).then((res) =&gt; {
+    ...
+});
+</code></pre>
+<p>The following would accomplish the same thing in <code>my-branch</code>:</p>
+<pre><code class="language-graphql">query {
+    branch(name: &quot;my-branch&quot;) {
+      tree {
+          get(key: &quot;a/b/c&quot;)
+      }
+    }
+}
+</code></pre>
+<p>It's also possible to set or update multiple keys using the <code>set_tree</code> and <code>update_tree</code> mutations. The following will set <code>/a</code> to &quot;foo&quot; and <code>/b</code> to &quot;bar&quot;:</p>
+<pre><code class="language-graphql">mutation {
+  set_tree(key: &quot;/&quot;, tree: [{key: &quot;a&quot;, value: &quot;foo&quot;}, {key: &quot;b&quot;, value:&quot;bar&quot;}]){
+    hash
+  }
+}
+</code></pre>
+<p>And updating multiple keys is similar:</p>
+<pre><code class="language-graphql">mutation {
+  update_tree(key: &quot;/&quot;, tree: [{key: &quot;a&quot;, value: &quot;testing&quot;}, {key: &quot;b&quot;, value: null}]){
+    hash
+  }
+}
+</code></pre>
+<p>this will set <code>a</code> to &quot;testing&quot; and remove the value associated with <code>b</code>.</p>
+<a class="header" href="#branch-info" id="branch-info"><h3>Branch info</h3></a>
+<p>Using <code>master</code>/<code>branch</code> queries we are able to find lots of information about the attached Irmin store:</p>
+<pre><code class="language-graphql">query {
+    master {
+        head {
+            hash
+            info
+            parents
+        }
+    }
+}
+</code></pre>
+<a class="header" href="#mutations" id="mutations"><h2>Mutations</h2></a>
+<p><code>irmin-graphql</code> also supports mutations, which are basically queries with side-effects.</p>
+<a class="header" href="#set" id="set"><h3>Set</h3></a>
+<p>For example, setting a key is easy:</p>
+<pre><code class="language-graphql">mutation {
+    set(key: &quot;a/b/c&quot;, value: &quot;123&quot;) {
+        hash
+    }
+}
+</code></pre>
+<p>The example above sets the key &quot;a/b/c&quot; (<code>[&quot;a&quot;; &quot;b&quot;; &quot;c&quot;]</code> in OCaml) to &quot;123&quot; and returns the new commit's hash.</p>
+<a class="header" href="#sync" id="sync"><h3>Sync</h3></a>
+<p><code>clone</code>, <code>push</code> and <code>pull</code> are also supported as long as they're supported by the underlying store! This allows data to be synchronized accross servers using a simple mutation:</p>
+<pre><code class="language-graphql">mutation {
+    pull(remote: &quot;git://github.com/mirage/irmin&quot;) {
+        hash
+    }
+}
+</code></pre>
+<a class="header" href="#graphql-servers-in-ocaml" id="graphql-servers-in-ocaml"><h2>GraphQL servers in OCaml</h2></a>
+<p>It is also possible to use the <code>irmin-graphql</code> OCaml interface to embed a GraphQL server in any application!</p>
+<p>Using <code>Irmin_unix.Graphql.Server.Make</code> you can convert an existing <code>Irmin.S</code> typed module into a GraphQL server:</p>
+<pre><code class="language-ocaml">module Graphql_store = Irmin_unix.Git.Mem.KV(Irmin.Contents.String)
+module Graphql = Irmin_unix.Graphql.Server.Make(Graphql_store)(struct let remote = Some Graphql_store.remote end)
+</code></pre>
+<p>The following code will initialize and run the server:</p>
+<pre><code class="language-ocaml">let run_server () =
+  (* Set up the Irmin store *)
+  Graphql_store.Repo.v (Irmin_git.config &quot;/tmp/irmin&quot;) &gt;&gt;= fun repo -&gt;
+
+  (* Initialize the GraphQL server *)
+  let server = Graphql.v repo in
+
+  (* Run the server *)
+  let on_exn exn =
+    Logs.debug (fun l -&gt; l &quot;on_exn: %s&quot; (Printexc.to_string exn))
+  in
+  Cohttp_lwt_unix.Server.create ~on_exn ~mode:(`TCP (`Port 1234)) server
+</code></pre>
+<a class="header" href="#customization" id="customization"><h3>Customization</h3></a>
+<p>It is possible to use a custom JSON representation for <code>contents</code> and <code>metadata</code>
+values by implementing <code>Irmin_graphql.Server.PRESENTER</code>:</p>
+<pre><code class="language-ocaml">module Example_type = struct
+  type t = {x: string; y: string; z: string}
+  let t =
+    let open Irmin.Type in
+    record &quot;Example_type&quot; (fun x y z -&gt; {x; y; z})
+    |+ field &quot;x&quot; string (fun t -&gt; t.x)
+    |+ field &quot;y&quot; string (fun t -&gt; t.y)
+    |+ field &quot;z&quot; string (fun t -&gt; t.z)
+    |&gt; sealr
+  let merge = Irmin.Merge.(option (default t))
+end
+
+module Example_presenter = struct
+  type t = Example_type.t
+  type src = Example_type.t
+  let to_src t = t
+  let schema_typ =
+    let open Example_type in
+    Irmin_graphql.Server.Schema.(obj &quot;Example&quot;
+      ~fields:(fun _ -&gt; [
+        field &quot;x&quot;
+          ~typ:(non_null string)
+          ~args:[]
+          ~resolve:(fun _ t -&gt; t.x)
+        ;
+        field &quot;y&quot;
+          ~typ:(non_null string)
+          ~args:[]
+          ~resolve:(fun _ t -&gt; t.y)
+        ;
+        field &quot;z&quot;
+          ~typ:(non_null string)
+          ~args:[]
+          ~resolve:(fun _ t -&gt; t.z)
+        ;
+      ])
+    )
+end
+</code></pre>
+<p>(You may also opt to use <code>Irmin_graphql.Server.Default_presenter</code>, which can be used on any <code>Irmin.Type.S</code>)</p>
+<p>Once you've done this for both the <code>contents</code> and <code>metadata</code> types you need to wrap them in <code>Irmin_graphql.Server.PRESENTATION</code> before passing them to <code>Irmin_graphql.Server.Make_ext</code>:</p>
+<pre><code class="language-ocaml">module Example_store = Irmin_mem.KV(Example_type)
+
+module Presentation = struct
+  module Contents = Example_presenter
+  module Metadata = Irmin_graphql.Server.Default_presenter(Example_store.Metadata)
+end
+
+module Config = struct
+  let remote = None
+  let info = Irmin_unix.info
+end
+
+module Graphql_ext =
+  Irmin_graphql.Server.Make_ext
+    (Cohttp_lwt_unix.Server)
+    (Config)
+    (Example_store)
+    (Presentation)
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                        
+                            <a rel="prev" href="Backend.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
+
+                        
+                            <a rel="next" href="Resources.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                
+                    <a href="Backend.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
+
+                
+                    <a href="Resources.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+                
+            </nav>
+
+        </div>
+
+        
+
+        
+
+        
+
+        
+        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
+        
+
+        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        
+
+        
+
+    </body>
+</html>
