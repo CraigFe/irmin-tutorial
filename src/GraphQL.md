@@ -18,7 +18,7 @@ To start the GraphQL server:
 $ irmin graphql --port 8080
 ```
 
-This will start the server on `localhost:8080`. By default `irmin-graphql` provides an GraphiQL editor for writing queries from within the brower which can be accessed at [http://localhost:8080/graphql](http://localhost:8080/graphql)
+This will start the server on `localhost:8080` - this can be customized using the `--address` and `--port` flags. By default `irmin-graphql` provides an GraphiQL editor for writing queries from within the brower which can be accessed at [http://localhost:8080/graphql](http://localhost:8080/graphql)
 
 ## Available clients
 
@@ -42,7 +42,9 @@ To start off we will create a query to retrieve the value stored at the path `ab
 ```graphql
 query {
     master {
+      tree {
         get(key: "abc")
+      }
     }
 }
 ```
@@ -61,7 +63,7 @@ ir.master().get("abc").then((res) => {
 ```javascript
 let ir = new Irmin("http://localhost:8080/graphql");
 ir.execute({
-    body: "query { master { get(key: "abc") } }",
+    body: "query { master { tree { get(key: "abc") } } }",
     variables: {}
 }).then((res) => {
     ...
@@ -73,10 +75,35 @@ The following would accomplish the same thing in `my-branch`:
 ```graphql
 query {
     branch(name: "my-branch") {
-    	get(key: "a/b/c")
+      tree {
+    	  get(key: "a/b/c")
+      }
     }
 }
 ```
+
+It's also possible to set or update multiple keys using the `set_tree` and `update_tree` mutations. The following will set `/a` to "foo" and `/b` to "bar":
+
+```graphql
+mutation {
+  set_tree(key: "/", tree: [{key: "a", value: "foo"}, {key: "b", value:"bar"}]){
+    hash
+  }
+}
+```
+
+And updating multiple keys is similar:
+
+```graphql
+mutation {
+  update_tree(key: "/", tree: [{key: "a", value: "testing"}, {key: "b", value: null}]){
+    hash
+  }
+}
+```
+
+this will set `a` to "testing" and remove the value associated with `b`.
+
 
 ### Branch info
 
@@ -158,7 +185,7 @@ The example above sets the key "a/b/c" (`["a"; "b"; "c"]` in OCaml) to "123" and
 
 ### Sync
 
-`clone`, `push` and `pull` are also supported! This allows data to be synchronized accross servers using a simple mutation:
+`clone`, `push` and `pull` are also supported as long as they're supported by the underlying store! This allows data to be synchronized accross servers using a simple mutation:
 
 ```graphql
 mutation {
@@ -231,4 +258,76 @@ let run_server () =
     Logs.debug (fun l -> l "on_exn: %s" (Printexc.to_string exn))
   in
   Cohttp_lwt_unix.Server.create ~on_exn ~mode:(`TCP (`Port 1234)) server
+```
+
+### Customization
+
+It is possible to use a custom JSON representation for `contents` and `metadata`
+values by implementing `Irmin_graphql.Server.PRESENTER`:
+
+```ocaml
+module Example_type = struct
+  type t = {x: string; y: string; z: string}
+  let t =
+    let open Irmin.Type in
+    record "Example_type" (fun x y z -> {x; y; z})
+    |+ field "x" string (fun t -> t.x)
+    |+ field "y" string (fun t -> t.y)
+    |+ field "z" string (fun t -> t.z)
+    |> sealr
+  let merge = Irmin.Merge.(option (default t))
+end
+
+module Example_presenter = struct
+  type t = Example_type.t
+  type src = Example_type.t
+  let to_src _tree _key t = t
+  let schema_typ =
+    let open Example_type in
+    Irmin_graphql.Server.Schema.(obj "Example"
+      ~fields:(fun _ -> [
+        field "x"
+          ~typ:(non_null string)
+          ~args:[]
+          ~resolve:(fun _ t -> t.x)
+        ;
+        field "y"
+          ~typ:(non_null string)
+          ~args:[]
+          ~resolve:(fun _ t -> t.y)
+        ;
+        field "z"
+          ~typ:(non_null string)
+          ~args:[]
+          ~resolve:(fun _ t -> t.z)
+        ;
+      ])
+    )
+end
+```
+
+(You may also opt to use `Irmin_graphql.Server.Default_presentation`, which can be used on any `Irmin.Type.S`)
+
+Once you've done this for both the `contents` and `metadata` types you need to wrap them in `Irmin_graphql.Server.PRESENTATION` before passing them to `Irmin_graphql.Server.Make_ext`:
+
+```ocaml
+module Example_store = Irmin_mem.KV(Example_type)
+
+module Presentation = struct
+  module Default = Irmin_graphql.Server.Default_presentation(Example_store)
+  module Metadata = Default.Metadata
+  module Contents = Example_presenter
+end
+
+module Config = struct
+  let remote = None
+  let info = Irmin_unix.info
+end
+
+module Graphql_ext =
+  Irmin_graphql.Server.Make_ext
+    (Cohttp_lwt_unix.Server)
+    (Config)
+    (Example_store)
+    (Presentation)
 ```

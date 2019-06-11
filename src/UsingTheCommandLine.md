@@ -57,11 +57,41 @@ If you get sick of passing around `--root` all the time you can create a configu
 ```yaml
 root: /tmp/irmin/example
 store: git
-content: string
+contents: string
 ```
 
 See the output of `irmin help irmin.yml` for a list of configurable parameters.
 
+## Parameters
+
+### Store types
+
+- `git`: on-disk Git-compatible store
+- `git-mem`: in-memory Git-compatible store
+- `mem`: in-memory store
+- `fs`: on-disk store
+
+### Content types (`-c`/`--contents`):
+
+- `string`
+- `json`: JSON objects
+- `json_value`: JSON values
+
+### Customization
+
+It is possible to extend the `irmin` executable using [Irmin_unix.Resolver](https://mirage.github.io/irmin/irmin-unix/Irmin_unix/Resolver/index.html) and [Irmin_unix.Cli](https://mirage.github.io/irmin/irmin-unix/Irmin_unix/Cli/index.html):
+
+```ocaml
+module Cli = Irmin_unix.Cli
+module R = Irmin_unix.Resolver
+
+let () =
+  R.Contents.add "my-content-type" (module Irmin.Contents.String);
+  R.Store.add "my-store-type" (fun (module Contents) ->
+    R.Store.v (module Irmin_mem.KV(Contents))
+  );
+  Cli.(run ~default commands)
+```
 
 ## Starting a GraphQL server
 
