@@ -94,6 +94,50 @@ query {
 }
 ```
 
+### Bulk queries
+
+Due to difficulties representing infinitely recursive datatypes in GraphQL, an Irmin tree is represented using the `[TreeItem!]` type. `TreeItem` has the following keys:
+
+- `key`
+- `value`
+- `metadata`
+
+Using this new information, it is possible to list every key/value pair using:
+
+```graphql
+query {
+	master {
+    head {
+      tree {
+        list_contents_recursively {
+          key,
+          value
+        }
+      }
+    }
+  }
+}
+```
+
+Which can also be augmented using `get_tree` to return a specific subtree:
+
+```graphql
+query {
+	master {
+    head {
+      tree {
+        get_tree(key:"a"){
+        	list_contents_recursively {
+          	key,
+          	value
+        	}
+      	}
+      }
+    }
+  }
+}
+```
+
 ## Mutations
 
 `irmin-graphql` also supports mutations, which are basically queries with side-effects.
@@ -123,6 +167,43 @@ mutation {
     }
 }
 ```
+
+### Bulk updates
+
+To update multiple values you can use `set_tree` and `update_tree`. The difference between the two is `set_tree` will modify
+the tree to match to provided tree, while `update_tree` will only modify the provided keys - updating the value if one is
+provided, otherwise removing the current value if `null` is provided. For example:
+
+```graphql
+mutation {
+  set_tree (key: "/", tree: [
+    {key:"a/b/c", value:"123"},
+    {key:"d/e/f", value:"456"}
+  ]) {
+    hash
+  }
+}
+```
+
+will set `a/b/c` to `"123"` and `d/e/f` to "456", and if there are any other keys they will be removed. To keep the existing values,
+`update_tree` should be used:
+
+
+```graphql
+mutation {
+  update_tree (key: "/", tree: [
+    {key:"a/b/c", value:"123"},
+    {key:"d/e/f", value:"456"},
+    {key:"testing", value:null}
+  ]) {
+    hash
+  }
+}
+```
+
+The above query will set the values of `a/b/c` and `d/e/f`, while removing the value associated with `testing` - all other values
+will be left as-is.
+
 
 ## GraphQL servers in OCaml
 
