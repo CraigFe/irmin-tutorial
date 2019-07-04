@@ -17,8 +17,6 @@ To create a content type you need to define the following:
 
 - A type `t`
 - A value `t` of type `Irmin.Type.t`
-- A function `pp` for formatting `t`
-- A function `of_string` for converting from `string` to `t`
 - A function `merge`, which performs a three-way merge
 
 ## Counter
@@ -33,24 +31,7 @@ module Counter: Irmin.Contents.S with type t = int64 = struct
 	let t = Irmin.Type.int64
 ```
 
-Next we will need to define some functions for converting to and from strings.
-
-```ocaml
-	let pp fmt = Format.fprintf fmt "%Ld"
-```
-
-`pp` defines a pretty-printer for our type.
-
-```ocaml
-	let of_string s =
-		match Int64.of_string_opt s with
-		| Some i -> Ok i
-		| None -> Error (`Msg "invalid counter value")
-```
-
-And `of_string` is used to convert a formatted string back to our original type. It returns ```(t, [`Msg of string]) result```, which allows for an error message to be passed back to the user if the value is invalid.
-
-Finally, we need to define a merge function.  There is already a `counter` implementation available in [Irmin.Merge](https://docs.mirage.io/irmin/Irmin/Merge/index.html), so you wouldn't actually need to write this yourself:
+Now we need to define a merge function.  There is already a `counter` implementation available in [Irmin.Merge](https://docs.mirage.io/irmin/Irmin/Merge/index.html), so you wouldn't actually need to write this yourself:
 
 ```ocaml
 	let merge ~old a b =
@@ -130,21 +111,7 @@ This is mapping variant cases to their names in string representation. Records a
         |> sealr
 ```
 
-Finally, we can use the builtin JSON encoding and merge function:
-
-```ocaml
-	let pp = Irmin.Type.pp_json t
-```
-
-This example uses [Irmin.Type.pp_json](https://mirage.github.io/irmin/irmin/Irmin/Type/index.html#val-pp_json) and [Irmin.Type.decode_json](https://mirage.github.io/irmin/irmin/Irmin/Type/index.html#val-decode_json) , the predefined JSON pretty-printer and parser, rather than writing our own. As types get more and more complex it is very nice to be able to use the JSON formatter to avoid having to write ad-hoc functions for encoding and decoding values.
-
-```ocaml
-    let of_string s =
-        let decoder = Jsonm.decoder (`String s) in
-        Irmin.Type.decode_json t decoder
-```
-
-And the merge operation:
+Here's the merge operation:
 
 ```ocaml
     let merge = Irmin.Merge.(option (idempotent t))
@@ -201,21 +168,7 @@ module Object = struct
     let t = Irmin.Type.(list (pair string string))
 ```
 
-So far so good, Irmin provides a simple way to model a list of pairs! Now we can use the JSON encoder again, just like in the previous example.
-
-Define `pp`:
-
-```ocaml
-	let pp = Irmin.Type.pp_json t
-```
-
-And `of_string`:
-
-```ocaml
-    let of_string s =
-        let decoder = Jsonm.decoder (`String s) in
-        Irmin.Type.decode_json t decoder
-```
+So far so good, Irmin provides a simple way to model a list of pairs!
 
 To write the merge function we can leverage `Irmin.Merge.alist`, which simplifies this process for association lists. In this example we are using strings for both the keys and values, however in most other cases `alist` can get a bit more complicated since it requires existing merge functions for both the key and value types. For a slightly more complicated example you can read through `merge_object` and `merge_value` in [contents.ml](https://github.com/mirage/irmin/blob/master/src/irmin/contents.ml), which are used to implement JSON contents for Irmin.
 
@@ -258,15 +211,6 @@ A convenience function for adding a timestamp to a `C.t` value:
 
 ```ocaml
     let v c = (c, Time.now ())
-```
-
-The same `pp` and `to_string` implementations as the previous examples:
-
-```ocaml
-	let pp = Irmin.Type.pp_json t
-    let of_string s =
-        let decoder = Jsonm.decoder (`String s) in
-        Irmin.Type.decode_json t decoder
 ```
 
 The merge operation for `Lww_register` is slightly different than the ones covered so far. It will not attempt to merge any values, instead it will pick the newest value based on the attached timestamp.
