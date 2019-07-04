@@ -38,3 +38,8 @@ publish: check
 generate:
 	ocamlbuild -pkg omd -pkg str gen/build.native
 	./build.native
+
+website: generate
+	git clone https://github.com/tarides/irmin.io.git || (cd irmin.io && git pull origin master)
+	mkdir -p irmin.io/tutorial
+	mv out/* irmin.io/tutorial
