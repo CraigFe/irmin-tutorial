@@ -6,16 +6,16 @@ Unlike writing a [custom datatype](Contents.html), there is not a tidy way of do
 
 ## Redis client
 
-This examples uses the [hiredis](https://github.com/zshipko/ocaml-hiredis) package to create connections, send and receive data from Redis servers. It is available on [opam](https://github.com/ocaml/opam) under the same name.
+This example uses the [hiredis](https://github.com/zshipko/ocaml-hiredis) package to create connections, send and receive data from Redis servers. It is available on [opam](https://github.com/ocaml/opam) under the same name.
 
 ## The readonly store
 
-The process for writing a backend for Irmin requires implementing a few functors - the accomplish this, we can start of by writing a helper module that provides an generic implementation that can be re-used by the content-adressable store and the atomic-write store:
+The process for writing a backend for Irmin requires implementing a few functors -- the accomplish this, we can start off by writing a helper module that provides a generic implementation that can be re-used by the content-addressable store and the atomic-write store:
 
 
-- `t`: The store type
-- `key`: The key type
-- `value`: The value/content type
+- `t`: the store type
+- `key`: the key type
+- `value`: the value/content type
 
 ```ocaml
 open Lwt.Infix
@@ -25,8 +25,8 @@ open Hiredis
 ```ocaml
 module Helper (K: Irmin.Type.S) (V: Irmin.Type.S) = struct
   type 'a t = (string * Client.t) (* Store type: Redis prefix and client *)
-  type key = K.t               (* Key type *)
-  type value = V.t             (* Value type *)
+  type key = K.t                  (* Key type *)
+  type value = V.t                (* Value type *)
 ```
 
 Additionally, it requires a few functions:
@@ -35,7 +35,7 @@ Additionally, it requires a few functions:
 - `mem`: checks whether or not a key exists
 - `find`: returns the value associated with a key (if it exists)
 
-Since an Irmin database requires a few levels of store types (links, objects, etc...) a prefix is needed to identify the store type in Redis or else several functions will return incorrect results. This is not an issue with the in-memory backend, since it is easy to just create an independent store for each type, however in this case, there will be several diffent store types on a single Redis instance.
+Since an Irmin database requires a few levels of store types (links, objects, etc...) a prefix is needed to identify the store type in Redis or else several functions will return incorrect results. This is not an issue with the in-memory backend, since it is easy to just create an independent store for each type, however in this case, there will be several different store types on a single Redis instance.
 
 
 ```ocaml
@@ -48,7 +48,7 @@ Since an Irmin database requires a few levels of store types (links, objects, et
     Lwt.return (root, Client.connect ~port:6379 "127.0.0.1")
 ```
 
-`mem` is implemented using the `EXISTS` command, which checks for the exitence of a key in Redis:
+`mem` is implemented using the `EXISTS` command, which checks for the existence of a key in Redis:
 
 ```ocaml
   let mem (prefix, client) key =
@@ -58,7 +58,7 @@ Since an Irmin database requires a few levels of store types (links, objects, et
       | _ -> Lwt.return_false
 ```
 
-`find` uses the `GET` command to retreive and key, if one isn't found or can't be decoded correctly then `find` returns `None`:
+`find` uses the `GET` command to retrieve the key, if one isn't found or can't be decoded correctly then `find` returns `None`:
 
 ```ocaml
   let find (prefix, client) key =
@@ -72,12 +72,12 @@ Since an Irmin database requires a few levels of store types (links, objects, et
 end
 ```
 
-### The content-adressable store
+### The content-addressable store
 
-Next is the content-adressable ([CONTENT_ADDRESSABLE_STORE](https://mirage.github.io/irmin/irmin/Irmin/module-type-CONTENT_ADDRESSABLE_STORE/index.html)) interface - the majority of the required methods can be inherited from `Helper`!
+Next is the content-addressable ([CONTENT_ADDRESSABLE_STORE](https://mirage.github.io/irmin/irmin/Irmin/module-type-CONTENT_ADDRESSABLE_STORE/index.html)) interface - the majority of the required methods can be inherited from `Helper`!
 
 ```ocaml
-module Content_adressable (K: Irmin.Hash.S) (V: Irmin.Type.S) = struct
+module Content_addressable (K: Irmin.Hash.S) (V: Irmin.Type.S) = struct
   include Helper(K)(V)
   let v = v "obj"
 ```
@@ -120,9 +120,9 @@ There are a few types we need to declare next. `key` and `value` should match `H
 ```ocaml
   module W = Irmin.Private.Watch.Make(K)(V)
   type t = { t: [`Write] H.t; w: W.t }  (* Store type *)
-  type key = H.key             (* Key type *)
-  type value = H.value         (* Value type *)
-  type watch = W.watch          (* Watch type *)
+  type key = H.key                      (* Key type *)
+  type value = H.value                  (* Value type *)
+  type watch = W.watch                  (* Watch type *)
 ```
 
 The `watches` variable defined below creates a context used to track active watches.
@@ -241,7 +241,7 @@ end
 Finally, add `Make` and `KV` functors for creating Redis-backed Irmin stores:
 
 ```ocaml
-module Make: Irmin.S_MAKER = Irmin.Make(Content_adressable)(Atomic_write)
+module Make: Irmin.S_MAKER = Irmin.Make(Content_addressable)(Atomic_write)
 
 module KV: Irmin.KV_MAKER = functor (C: Irmin.Contents.S) ->
   Make

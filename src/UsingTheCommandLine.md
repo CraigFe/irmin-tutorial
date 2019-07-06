@@ -52,7 +52,7 @@ $ irmin tree -s git --root $EXAMPLE
 
 ## Configuration
 
-If you get sick of passing around `--root` all the time you can create a configuration file called `./irmin.yml` or `~/.irmin/config.yml` with global configuration options:
+If you get sick of passing around `--root` all the time, you can create a configuration file called `./irmin.yml` or `~/.irmin/config.yml` with global configuration options:
 
 ```yaml
 root: /tmp/irmin/example
@@ -64,7 +64,7 @@ See the output of `irmin help irmin.yml` for a list of configurable parameters.
 
 ## Parameters
 
-### Store types
+### Store types (`-s`/`--store`):
 
 - `git`: on-disk Git-compatible store
 - `git-mem`: in-memory Git-compatible store
@@ -127,7 +127,7 @@ $ irmin revert 7941ae769181f4fbf5056d8b2bfe1cd8e10928bd
 
 ## Git compatibility
 
-`irmin` and `git` can be used interchangeably to inspect and modify a repository, for instance here are some examples of operations that can be achieved using either git or Irmin.
+`irmin` and `git` can be used interchangeably to inspect and modify a repository. For instance, here are some examples of operations that can be achieved using either `git` or `irmin`.
 
 ### Cloning a remote repository
 

@@ -1,12 +1,18 @@
-# Getting started using OCaml
+# Getting started with OCaml
 
-When setting up and Irmin database in OCaml you will need to consider, at least, the content type and storage backend. This is because Irmin has the ability to adapt to existing data structures using a convenient type combinator ([Irmin.Type](https://mirage.github.io/irmin/irmin/Irmin/Type/index.html)), which is used to define [contents](https://mirage.github.io/irmin/irmin/Irmin/Contents/index.html) for your datastore. Irmin provides implementations for [String](https://mirage.github.io/irmin/irmin/Irmin/Contents/index.html#module-String), [Cstruct](https://mirage.github.io/irmin/irmin/Irmin/Contents/index.html#module-Cstruct), [Json](https://mirage.github.io/irmin/irmin/Irmin/Contents/index.html#module-Json) and [Json_value](https://mirage.github.io/irmin/irmin/Irmin/Contents/index.html#module-Json_value) contents, but it is also very easy to make your own!
+When setting up an Irmin database in OCaml you will need to consider, at least, the content type and storage backend. This is because Irmin has the ability to adapt to existing data structures using a convenient type combinator ([Irmin.Type](https://mirage.github.io/irmin/irmin/Irmin/Type/index.html)), which is used to define [contents](https://mirage.github.io/irmin/irmin/Irmin/Contents/index.html) for your datastore. Irmin provides implementations for [String](https://mirage.github.io/irmin/irmin/Irmin/Contents/index.html#module-String), [Cstruct](https://mirage.github.io/irmin/irmin/Irmin/Contents/index.html#module-Cstruct), [Json](https://mirage.github.io/irmin/irmin/Irmin/Contents/index.html#module-Json) and [Json_value](https://mirage.github.io/irmin/irmin/Irmin/Contents/index.html#module-Json_value) contents, but it is also very easy to make your own!
 
-Irmin give you a few options a few options when it comes to storage: an in-memory store (`irmin-mem`), a filesystem store (`irmin-fs`) and git-compatible filesystem/in-memory stores (`irmin-git`). These packages define the way that the data should be organized, but not any I/O routines (with the exception of `irmin-mem`, which does no I/O). Luckily, `irmin-unix` implements the I/O routines needed to make Irmin work on unix-like platforms. Additionally, the `irmin-mirage`, `irmin-mirage-git` and `irmin-mirage-graphql` packages provide [Mirage](https://mirage.io) compatible interfaces.
+Irmin gives you a few options when it comes to storage:
+
+- an in-memory store (`irmin-mem`)
+- a filesystem store (`irmin-fs`)
+- git-compatible filesystem/in-memory stores (`irmin-git`)
+
+These packages define the way that the data should be organized, but not any I/O routines (with the exception of `irmin-mem`, which does no I/O). Luckily, `irmin-unix` implements the I/O routines needed to make Irmin work on Unix-like platforms. Additionally, the `irmin-mirage`, `irmin-mirage-git` and `irmin-mirage-graphql` packages provide [Mirage](https://mirage.io)-compatible interfaces.
 
 It's also possible to implement your own storage backend if you'd like -- nearly everything in `Irmin` is configurable thanks to the power of functors in OCaml! This includes the hash function, branch, key and metadata types. Because of this flexibility there are a lot of different options to pick from; I will do my best to explain the most basic usage in this section and begin introducing more advanced concepts in subsequent sections.
 
-It is important to note that most `Irmin` functions return `Lwt.t` values, which means that you will need to use `Lwt_main.run` to execute them. If you're not familiar with [Lwt](https://github.com/ocsigen/lwt) then I suggest [this tutorial](https://mirage.io/wiki/tutorial-lwt).
+It is important to note that most Irmin functions return `Lwt.t` values, which means that you will need to use `Lwt_main.run` to execute them. If you're not familiar with [Lwt](https://github.com/ocsigen/lwt) then I suggest [this tutorial](https://mirage.io/wiki/tutorial-lwt).
 
 ## Creating a store
 
@@ -38,7 +44,7 @@ module Mem_Store =
 
 ## Configuring and creating a repo
 
-Different store types require different configuration options -- an on-disk store needs to know where it should be stored in the filesystem, however an in-memory store doesn't. This means that each storage backend implements its own configuration methods based on [Irmin.Private.Conf](https://mirage.github.io/irmin/irmin/Irmin/Private/Conf/index.html) - for the examples above there are `Irmin_mem.config`, `Irmin_fs.config` and `Irmin_git.config`, each taking slightly different parameters.
+Different store types require different configuration options -- an on-disk store needs to know where it should be stored in the filesystem, however an in-memory store doesn't. This means that each storage backend implements its own configuration methods based on [Irmin.Private.Conf](https://mirage.github.io/irmin/irmin/Irmin/Private/Conf/index.html) -- for the examples above there are `Irmin_mem.config`, `Irmin_fs.config` and `Irmin_git.config`, each taking slightly different parameters.
 
 ```ocaml
 let git_config = Irmin_git.config ~bare:true "/tmp/irmin"

@@ -16,8 +16,8 @@ Now that you've read through the documentation, let's create some contents by de
 To create a content type you need to define the following:
 
 - A type `t`
-- A value `t` of type `Irmin.Type.t`
-- A function `merge`, which performs a three-way merge
+- A value `t` of type `t Irmin.Type.t`
+- A function `merge`, which performs a three-way merge over values of type `t`
 
 ## Counter
 
@@ -63,7 +63,7 @@ module Counter_mem_store = Irmin_mem.KV(Counter)
 
 In this example I will wrap a record type so it can be stored directly in Irmin.
 
-Here is a `car` type that we will use as content type for our store:
+Here is a `car` type that we will use as the content type of our store:
 
 ```ocaml
 type color =
@@ -79,7 +79,7 @@ type car = {
 }
 ```
 
-First color has to be wrapped, variants are modeled using the [variant](https://mirage.github.io/irmin/irmin/Irmin/Type/index.html#val-variant) function:
+First, `color` has to be wrapped. Variants are modeled using the [variant](https://mirage.github.io/irmin/irmin/Irmin/Type/index.html#val-variant) function:
 
 ```ocaml
 module Car = struct
@@ -184,14 +184,14 @@ end
 
 A last-write-wins register is similar to a basic Irmin store, except on merge the most recently written value will be picked rather than trying to merge the values.
 
-First, this requires a way to get a timestamp - we will make this as generic as possible so it can be used on unix or MirageOS:
+First, this requires a way to get a timestamp -- we will make this as generic as possible so it can be used on Unix or MirageOS:
 
 ```ocaml
 module type TIMESTAMP = sig
     val now: unit -> int64
 end
 ```
-On unix this can be implemented `Unix.gettimeofday`:
+On Unix this can be implemented `Unix.gettimeofday`:
 
 ```ocaml
 module Timestamp = struct
@@ -199,7 +199,7 @@ module Timestamp = struct
 end
 ```
 
-`Lww_register` will be defined a functor that wraps an exsiting content type:
+`Lww_register` will be defined a functor that wraps an existing content type:
 
 ```ocaml
 module Lww_register (Time: TIMESTAMP) (C: Irmin.Type.S) = struct

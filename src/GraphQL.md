@@ -18,11 +18,11 @@ To start the GraphQL server:
 $ irmin graphql --port 8080
 ```
 
-This will start the server on `localhost:8080` - this can be customized using the `--address` and `--port` flags. By default `irmin-graphql` provides an GraphiQL editor for writing queries from within the brower which can be accessed at [http://localhost:8080/graphql](http://localhost:8080/graphql)
+This will start the server on `localhost:8080` - this can be customized using the `--address` and `--port` flags. By default `irmin-graphql` provides an GraphiQL editor for writing queries from within the browser which can be accessed at [http://localhost:8080/graphql](http://localhost:8080/graphql).
 
 ## Available clients
 
-There are several reference client implementations provide many basic queries by default, in addition to simplifying the process of executing handwritten queries.
+There are several reference client implementations which provide many basic queries by default, in addition to simplifying the process of executing handwritten queries.
 
 - [irmin-js](https://github.com/zshipko/irmin-js)
 - [irmin-go](https://github.com/zshipko/irmin-go)
@@ -33,7 +33,7 @@ Using the GraphiQL web interface you can explore the schema using the **Docs** b
 
 ## Queries
 
-Using `irmin-graphql` it is possible to collect information about Irmin databases and (Git repositories) using GraphQL.
+Using `irmin-graphql` it is possible to collect information about Irmin databases (and Git repositories) using GraphQL.
 
 ### Get
 
@@ -185,7 +185,7 @@ The example above sets the key "a/b/c" (`["a"; "b"; "c"]` in OCaml) to "123" and
 
 ### Sync
 
-`clone`, `push` and `pull` are also supported as long as they're supported by the underlying store! This allows data to be synchronized accross servers using a simple mutation:
+`clone`, `push` and `pull` are also supported as long as they're supported by the underlying store! This allows data to be synchronized across servers using a simple mutation:
 
 ```graphql
 mutation {
