@@ -86,7 +86,7 @@ This module needs an `add` function, which takes a value, hashes it, stores the 
 
 ```ocaml
   let add (prefix, client) value =
-      let hash = K.digest (Irmin.Type.to_string V.t value) in
+      let hash = K.hash (fun f -> f @@ Irmin.Type.to_string V.t value) in
       let key = Irmin.Type.to_string K.t hash in
       let value = Irmin.Type.to_string V.t value in
       ignore (Client.run client [| "SET"; prefix ^ key; value |]);
